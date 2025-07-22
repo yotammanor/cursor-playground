@@ -132,10 +132,10 @@ test('user management flow', async ({ page }) => {
     await expect(page.locator(`text=${testUsername}`)).toBeVisible({ timeout: 5000 });
     console.log('Found new user in the list');
     
-    // Verify user count increased
+    // Verify user count increased by 1
     const newUserCount = await page.locator('a[href^="/users/"]').count();
     console.log(`New user count: ${newUserCount}`);
-    expect(newUserCount).toBeGreaterThan(initialUserCount);
+    expect(newUserCount).toBe(initialUserCount + 1);
     
     // Step 7: Click on the new user to view details
     await page.locator(`text=${testUsername}`).click();
@@ -143,10 +143,8 @@ test('user management flow', async ({ page }) => {
     
     // Verify we're on the User Detail page
     await expect(page.locator('h1')).toContainText('User Details');
-    
-    // Updated selectors based on the actual structure of the UserDetail page
-    await expect(page.locator('.grid .text-sm:has-text("Username") + div')).toContainText(testUsername);
-    await expect(page.locator('.grid .text-sm:has-text("Email") + div')).toContainText(testEmail);
+    await expect(page.locator('div.grid div:has-text("Username") + div')).toContainText(testUsername);
+    await expect(page.locator('div.grid div:has-text("Email") + div')).toContainText(testEmail);
     
     // Step 8: Delete the user
     // First, accept the confirmation dialog that will appear
@@ -162,10 +160,10 @@ test('user management flow', async ({ page }) => {
     // Step 9: Verify the user is no longer in the list
     await expect(page.locator(`text=${testUsername}`)).not.toBeVisible({ timeout: 5000 });
     
-    // Verify user count decreased
+    // Verify user count is back to initial count
     const finalUserCount = await page.locator('a[href^="/users/"]').count();
     console.log(`Final user count: ${finalUserCount}`);
-    expect(finalUserCount).toBeLessThan(newUserCount);
+    expect(finalUserCount).toBe(initialUserCount);
   } catch (error) {
     console.log('Error in verification steps:', error);
     // Take a screenshot for debugging

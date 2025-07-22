@@ -9,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [
     ['html', { open: 'never' }],
-    ['line', { printSteps: true }],
+    'line'
   ],
   use: {
     baseURL: 'http://localhost:5174',
