@@ -7,6 +7,7 @@ This directory contains end-to-end tests for the Task Management Application usi
 - **navigation.test.js**: Tests basic navigation flows within the application
 - **search.test.js**: Tests search functionality on Users and Tasks pages
 - **user-management.test.js**: Tests the complete user management flow (create, view, delete)
+- **task-management.test.js**: Tests the complete task management flow (create, view, edit, delete)
 
 ## Running Tests
 
