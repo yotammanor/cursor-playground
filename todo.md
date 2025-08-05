@@ -1,6 +1,5 @@
 # Task Management Application - Progress Tracker
 
-## Completed Tasks
 
 ### Project Setup
 - [x] Scaffolded project structure based on README.md specifications
@@ -8,6 +7,7 @@
 - [x] Implemented FastAPI web-api service with user and task endpoints
 - [x] Set up Celery worker service with task processing capabilities
 - [x] Created React frontend with TypeScript and Vite
+- [ ] Set up a broker for Celery (e.g., Redis or RabbitMQ) using docker
 
 ### Frontend Development
 - [x] Migrated from Chakra UI to Shadcn UI and Tailwind CSS v4
@@ -37,54 +37,50 @@
 - [x] Created .gitignore file
 - [x] Made initial commit with all project files
 - [x] Created remote GitHub repository (yotammanor/cursor-playground)
-- [x] Pushed code to GitHub
+- [x] Pushed code to GitHub (including all previous changes)
 
-### Development Tools
-- [x] Create a VS Code launch.json file to start all services in debug mode
+### Env Setup (local + build)
 
-## Current Status
+#### Backend Services
+- [ ] Learn about uv (for python versions, venv and deps), https://taskfile.dev/, docker, and how to use them together
+- [ ] Set up a local development environment with uv, Taskfile
+- [ ] Set up a reproducible build for each service, using Docker and taskfile
+- [ ] Make sure dev requirements are properly separated from production requirements
+- [ ] Make sure common dependencies are properly shared between services
+- [ ] Make sure all services can be run locally with a single command (e.g., `task dev`), alongside broker and database services
+- [ ] Make sure all services can be built with a single command (e.g., `task build`)
 
-The application is now fully functional with the following features:
-1. User management (create, read, update, delete)
-2. Task management (create, read, update, delete)
-3. Proper API integration between frontend and backend
-4. End-to-end testing with Playwright
 
-We have fixed the following issues:
-1. CORS configuration to allow requests from port 5174 (the actual port used by the frontend)
-2. User creation functionality in the frontend
-3. User management test flow with proper selectors and assertions
+#### Frontend
 
-Development tools have been enhanced with:
-1. VS Code launch.json for starting all services in debug mode
-2. Comprehensive documentation for using the launch configurations
+- [ ] Research how to replace npm with desired yarn
+- [ ] replace `npm` with `yarn` in the frontend setup
+- [ ] integrate `yarn` with the Taskfile for managing frontend dependencies and scripts
 
-## Remaining Tasks
+#### All together
 
-### Additional Testing
-- [ ] Add more comprehensive tests for task management
-- [ ] Add unit tests for backend API endpoints
-- [ ] Add unit tests for frontend components
+- [ ] Make sure the Taskfile can run all services together, including the frontend, backend, broker, and database - this may need to be a composition of subpart taskfiles, if it is easily supported
+- [ ] Make sure the Taskfile can:
+  - [ ] Test all
+  - [ ] Build all
+  - [ ] Lint all
+  - [ ] Deploy all
 
-### Documentation
-- [ ] Update API documentation with any changes
-- [ ] Add setup instructions for running tests
-- [ ] Document known issues and their workarounds
+### CI/CD
 
-### Deployment
-- [ ] Add deployment instructions for development and production
-- [ ] Consider containerization with Docker
+- [ ] Set up GitHub Actions for CI/CD
+- [ ] Configure workflows for building, testing, and deploying services - such that it calls on the taskfile to run the tests, build, and deploy
 
-### Enhancements
+
+## Features to complete
+
+- [ ] Make the worker and web-api services communicate via the broker, on simple tasks.
+- [ ] Track progress of tasks in the UI
+
+
+### Future Work
 - [ ] Add authentication and authorization
 - [ ] Implement pagination for users and tasks lists
 - [ ] Add sorting and filtering options
 - [ ] Improve error handling and user feedback
 - [ ] Add form validation with better user feedback
-
-## Next Steps
-
-1. Implement task management tests similar to user management tests
-2. Add unit tests for backend API endpoints
-3. Document the application setup and testing process
-4. Consider deployment options and containerization 
