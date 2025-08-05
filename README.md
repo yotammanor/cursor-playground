@@ -1,14 +1,23 @@
-# Fullstack Application
+# Task Management Application
 
-A full-stack application with a React frontend and Python microservices backend.
+A full-stack task management application with a React frontend and Python microservices backend.
 
 ## Project Structure
 
 ```
 .
 ├── app/                  # Client-side React application
+│   ├── src/              # React source code
+│   │   ├── api/          # API client functions
+│   │   ├── components/   # Reusable UI components
+│   │   ├── lib/          # Utility functions
+│   │   ├── pages/        # Page components
+│   │   └── types/        # TypeScript type definitions
+│   └── tests/            # End-to-end tests with Playwright
 ├── services/             # Server-side services
 │   ├── web-api/          # FastAPI web service
+│   │   ├── app/          # API implementation
+│   │   └── tests/        # API unit tests
 │   ├── worker/           # Background worker service
 │   └── common/           # Shared code between services
 └── devops/               # Infrastructure and deployment code
@@ -22,14 +31,17 @@ A full-stack application with a React frontend and Python microservices backend.
 - Vite 5.x
 - Tailwind CSS v4 (alpha)
 - Shadcn UI (Component Library)
-- React Query
-- React Router DOM
+- React Query (Data fetching)
+- React Router DOM (Routing)
+- Vitest & React Testing Library (Unit testing)
+- Playwright (End-to-end testing)
 
 ### Backend
 - Python 3.10
 - FastAPI (>0.109)
 - Pydantic (>2.9)
 - SQLAlchemy 1.3.x
+- Pytest (Unit testing)
 
 ## UI Framework Decision
 
@@ -51,32 +63,3 @@ This project uses **Shadcn UI** with **Tailwind CSS v4** for the frontend. This 
 - Node.js 18.x
 - Python 3.10
 - Yarn 4.5.x
-- Virtualenvwrapper
-
-### Frontend Setup
-```bash
-cd app
-yarn install
-yarn dev
-```
-
-### Backend Setup
-```bash
-# Set up web-api service
-cd services/web-api
-mkvirtualenv web-api
-pip install -e ../common
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-
-# Set up worker service
-cd services/worker
-mkvirtualenv worker
-pip install -e ../common
-pip install -r requirements.txt
-python -m worker.main
-```
-
-## Development
-
-Each service can be developed independently. See the README in each directory for specific instructions. 
