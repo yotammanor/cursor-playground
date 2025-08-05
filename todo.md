@@ -1,5 +1,41 @@
 # Task Management Application - Progress Tracker
 
+## Project Roadmap
+
+### Phase 1: Development Environment and Tooling
+- [ ] Learn about uv (for python versions, venv and deps), https://taskfile.dev/, docker, and how to use them together. document in a dedicate file.
+- [ ] Set up a local development environment of the backend services with `uv` and `Taskfile`.
+- [ ] Set up reproducible builds for each service using `Docker` and `Taskfile`
+- [ ] Make sure dev requirements are properly separated from production requirements
+- [ ] Make sure common dependencies are properly shared between services
+- [ ] Replace `npm` with `yarn` in the frontend setup
+- [ ] Integrate `yarn` with the `Taskfile` for managing frontend dependencies and scripts
+- [ ] Make sure all services can be run locally with a single command (e.g., `task dev`), alongside broker and database services
+- [ ] Make sure all services can be built with a single command (e.g., `task build`)
+- [ ] Configure `Taskfile` to:
+  - [ ] Test all
+  - [ ] Build all
+  - [ ] Lint all
+  - [ ] Deploy all
+
+### Phase 2: Core Feature Implementation
+- [ ] Make the worker and web-api services communicate via the broker, on simple tasks.
+- [ ] Set up a broker for Celery (e.g., Redis or RabbitMQ) using docker, and integrate into local dev env.
+- [ ] Track progress of tasks in the UI
+
+### Phase 3: Automation and CI/CD
+- [ ] Set up GitHub Actions for CI/CD
+- [ ] Configure workflows for building, testing, and deploying services - such that it calls on the taskfile to run the tests, build, and deploy
+
+### Phase 4: Application Enhancement
+- [ ] Add authentication and authorization
+- [ ] Implement pagination for users and tasks lists
+- [ ] Add sorting and filtering options
+- [ ] Improve error handling and user feedback
+- [ ] Add form validation with better user feedback
+
+
+## Completed Tasks
 
 ### Project Setup
 - [x] Scaffolded project structure based on README.md specifications
@@ -7,7 +43,6 @@
 - [x] Implemented FastAPI web-api service with user and task endpoints
 - [x] Set up Celery worker service with task processing capabilities
 - [x] Created React frontend with TypeScript and Vite
-- [ ] Set up a broker for Celery (e.g., Redis or RabbitMQ) using docker
 
 ### Frontend Development
 - [x] Migrated from Chakra UI to Shadcn UI and Tailwind CSS v4
@@ -38,49 +73,3 @@
 - [x] Made initial commit with all project files
 - [x] Created remote GitHub repository (yotammanor/cursor-playground)
 - [x] Pushed code to GitHub (including all previous changes)
-
-### Env Setup (local + build)
-
-#### Backend Services
-- [ ] Learn about uv (for python versions, venv and deps), https://taskfile.dev/, docker, and how to use them together
-- [ ] Set up a local development environment with uv, Taskfile
-- [ ] Set up a reproducible build for each service, using Docker and taskfile
-- [ ] Make sure dev requirements are properly separated from production requirements
-- [ ] Make sure common dependencies are properly shared between services
-- [ ] Make sure all services can be run locally with a single command (e.g., `task dev`), alongside broker and database services
-- [ ] Make sure all services can be built with a single command (e.g., `task build`)
-
-
-#### Frontend
-
-- [ ] Research how to replace npm with desired yarn
-- [ ] replace `npm` with `yarn` in the frontend setup
-- [ ] integrate `yarn` with the Taskfile for managing frontend dependencies and scripts
-
-#### All together
-
-- [ ] Make sure the Taskfile can run all services together, including the frontend, backend, broker, and database - this may need to be a composition of subpart taskfiles, if it is easily supported
-- [ ] Make sure the Taskfile can:
-  - [ ] Test all
-  - [ ] Build all
-  - [ ] Lint all
-  - [ ] Deploy all
-
-### CI/CD
-
-- [ ] Set up GitHub Actions for CI/CD
-- [ ] Configure workflows for building, testing, and deploying services - such that it calls on the taskfile to run the tests, build, and deploy
-
-
-## Features to complete
-
-- [ ] Make the worker and web-api services communicate via the broker, on simple tasks.
-- [ ] Track progress of tasks in the UI
-
-
-### Future Work
-- [ ] Add authentication and authorization
-- [ ] Implement pagination for users and tasks lists
-- [ ] Add sorting and filtering options
-- [ ] Improve error handling and user feedback
-- [ ] Add form validation with better user feedback
