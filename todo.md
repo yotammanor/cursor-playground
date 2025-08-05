@@ -3,7 +3,7 @@
 ## Project Roadmap
 
 ### Phase 1: Development Environment and Tooling
-- [ ] Learn about uv (for python versions, venv and deps), https://taskfile.dev/, docker, and how to use them together. document in a dedicate file.
+- [x] Learn about uv (for python versions, venv and deps), https://taskfile.dev/, docker, and how to use them together. document in a dedicate file.
 - [ ] Set up a local development environment of the backend services with `uv` and `Taskfile`.
 - [ ] Set up reproducible builds for each service using `Docker` and `Taskfile`
 - [ ] Make sure dev requirements are properly separated from production requirements
