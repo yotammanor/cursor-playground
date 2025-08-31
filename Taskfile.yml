@@ -1,0 +1,155 @@
+version: "3"
+
+# Task Management Application - Main Taskfile
+# This file orchestrates development, testing, building, and deployment tasks
+# using composition of individual service Taskfiles
+
+includes:
+  web-api:
+    taskfile: ./services/web-api/Taskfile.yml
+    dir: ./services/web-api
+    internal: true
+  worker:
+    taskfile: ./services/worker/Taskfile.yml
+    dir: ./services/worker
+    internal: true
+  common:
+    taskfile: ./packages/common/Taskfile.yml
+    dir: ./packages/common
+    internal: true
+  app:
+    taskfile: ./app/Taskfile.yml
+    dir: ./app
+    internal: true
+
+
+tasks:
+  # === Setup Tasks ===
+  setup:
+    desc: "Set up the entire development environment"
+    cmds:
+      - task: python:deps
+      - task: app:deps
+      - echo "✅ Development environment setup complete"
+
+  # === Development Tasks ===
+  dev:
+    desc: "Start all services for local development"
+    deps: [setup]
+    cmds:
+      - echo "🚀 Starting development environment..."
+      - echo "Run 'task web-api:run' and 'task worker:run' in separate terminals"
+      - echo "Run 'task app:dev' for frontend development server"
+      - echo "TODO - Implement parallel startup of all services"
+
+  # === Testing Tasks ===
+  test:
+    desc: "Run all tests (unit + e2e)"
+    cmds:
+      - task: python:test
+      - task: app:test
+      - echo "✅ All tests completed"
+
+  # === Linting Tasks ===
+  lint:
+    desc: "Run all linters and formatters"
+    cmds:
+      - task: python:lint
+      - task: app:lint
+      - echo "✅ All linting completed"
+
+  # === Build Tasks ===
+  build:
+    desc: "Build all services and frontend"
+    cmds:
+      - task: python:build
+      - task: app:build
+      - echo "✅ All builds completed"
+
+  # === Utility Tasks ===
+  doctor:
+    desc: "Check for required development dependencies"
+    cmds:
+      - echo "🔍 Checking development dependencies..."
+      - |
+        echo "Checking nvm..."
+        if command -v nvm >/dev/null 2>&1; then
+          echo "✅ nvm is installed"
+          nvm --version
+        else
+          echo "❌ nvm is not installed or not in PATH"
+          echo "   Install nvm: https://github.com/nvm-sh/nvm#installing-and-updating"
+        fi
+      - |
+        echo "Checking uv..."
+        if command -v uv >/dev/null 2>&1; then
+          echo "✅ uv is installed"
+          uv --version
+        else
+          echo "❌ uv is not installed or not in PATH"
+          echo "   Install uv: https://docs.astral.sh/uv/getting-started/installation/"
+        fi
+      - |
+        echo "Checking yarn..."
+        if command -v yarn >/dev/null 2>&1; then
+          echo "✅ yarn is installed"
+          yarn --version
+        else
+          echo "❌ yarn is not installed or not in PATH"
+          echo "   Install yarn: npm install -g yarn"
+        fi
+      - echo "🏥 Doctor check completed"
+
+  clean:
+    desc: "Clean build artifacts and caches"
+    cmds:
+      - echo "🧹 Cleaning build artifacts..."
+      - task: common:clean
+      - task: web-api:clean
+      - task: worker:clean
+      - task: app:clean
+      - rm -rf dist/ build/ coverage/
+      - echo "✅ Clean completed"
+
+  default:
+    desc: "Show available tasks (default command)"
+    cmds:
+      - task --list
+
+  help:
+    desc: "Show available tasks"
+    cmds:
+      - task --list
+  # === Internal Python Tasks (not exposed to users) ===
+  python:deps:
+    desc: "Install Python dependencies for all services"
+    internal: true
+    cmds:
+      - task: common:deps
+      - task: web-api:deps
+      - task: worker:deps
+
+  python:test:
+    desc: "Run Python tests for all services"
+    internal: true
+    cmds:
+      - task: common:test
+      - task: web-api:test
+      - task: worker:test
+
+  python:lint:
+    desc: "Run Python linting and formatting"
+    internal: true
+    cmds:
+      - task: common:lint
+      - task: web-api:lint
+      - task: worker:lint
+
+  python:build:
+    desc: "Build Python packages"
+    internal: true
+    cmds:
+      - task: common:build
+      - task: web-api:build
+      - task: worker:build
+

@@ -1,0 +1,94 @@
+version: "3"
+
+# Frontend Application Taskfile
+# Handles React/Vite frontend tasks
+
+vars:
+  SERVICE_NAME: app
+  BUILD_DIR: dist
+  
+tasks:
+  default:
+    desc: "Show available tasks (default command)"
+    cmds:
+      - task --list
+
+  deps:
+    desc: "Install Node.js dependencies for frontend"
+    cmds:
+      - echo "📦 Installing frontend dependencies..."
+      - npm install
+
+  deps:clean:
+    desc: "Clean install Node.js dependencies"
+    cmds:
+      - echo "🧹 Clean installing frontend dependencies..."
+      - rm -rf node_modules package-lock.json
+      - npm install
+
+  dev:
+    desc: "Start frontend development server"
+    cmds:
+      - echo "🚀 Starting frontend development server..."
+      - npm run dev
+
+  build:
+    desc: "Build frontend for production"
+    cmds:
+      - echo "🏗️ Building frontend..."
+      - npm run build
+
+  preview:
+    desc: "Preview production build"
+    cmds:
+      - echo "👀 Previewing production build..."
+      - npm run preview
+
+  test:
+    desc: "Run all frontend tests"
+    cmds:
+      - task: test:unit
+      - task: test:e2e
+
+  test:unit:
+    desc: "Run frontend unit tests"
+    cmds:
+      - echo "🧪 Running frontend unit tests..."
+      - npm run test
+
+  test:e2e:
+    desc: "Run Playwright e2e tests"
+    cmds:
+      - echo "🧪 Running e2e tests..."
+      - npm run test:e2e
+
+  test:e2e:ui:
+    desc: "Run Playwright e2e tests with UI"
+    cmds:
+      - echo "🧪 Running e2e tests with UI..."
+      - npx playwright test --ui
+
+  lint:
+    desc: "Run frontend linting and formatting"
+    cmds:
+      - echo "🔍 Linting frontend..."
+      - npm run lint
+
+  lint:fix:
+    desc: "Fix frontend linting issues"
+    cmds:
+      - echo "🔧 Fixing frontend lint issues..."
+      - npm run lint:fix
+
+  format:
+    desc: "Format frontend code"
+    cmds:
+      - echo "✨ Formatting frontend code..."
+      - npm run format
+
+  clean:
+    desc: "Clean build artifacts for frontend"
+    cmds:
+      - echo "🧹 Cleaning frontend artifacts..."
+      - rm -rf {{.BUILD_DIR}} node_modules/.vite
+

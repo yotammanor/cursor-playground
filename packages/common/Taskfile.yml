@@ -1,0 +1,74 @@
+version: "3"
+
+# Common Package Taskfile
+# Handles shared library tasks
+
+vars:
+  SERVICE_NAME: common
+  PYTHON_SRC: common
+  TESTS_DIR: tests
+
+tasks:
+  default:
+    desc: "Show available tasks (default command)"
+    cmds:
+      - task --list
+
+  deps:
+    desc: "Install dependencies for common package"
+    cmds:
+      - echo "📦 Installing dependencies for {{.SERVICE_NAME}}..."
+      - uv sync --all-groups
+
+  sync:
+    desc: "Sync exact dependencies from lock files"
+    cmds:
+      - echo "🔒 Syncing dependencies for {{.SERVICE_NAME}}..."
+      - uv sync --frozen
+
+  test:
+    desc: "Run tests for common package"
+    cmds:
+      - echo "🧪 Testing {{.SERVICE_NAME}}..."
+      - uv run pytest {{.TESTS_DIR}}/ -v
+    status:
+      - test -d {{.TESTS_DIR}}
+
+  test:unit:
+    desc: "Run unit tests for common package"
+    cmds:
+      - task: test
+
+  lint:
+    desc: "Run linting and formatting for common package"
+    cmds:
+      - echo "🔍 Linting {{.SERVICE_NAME}}..."
+      - uv run ruff check {{.PYTHON_SRC}}
+      - uv run ruff format {{.PYTHON_SRC}}
+
+  lint:check:
+    desc: "Check linting without fixing"
+    cmds:
+      - echo "🔍 Checking lint for {{.SERVICE_NAME}}..."
+      - uv run ruff check {{.PYTHON_SRC}} --diff
+      - uv run ruff format {{.PYTHON_SRC}} --diff
+
+  build:
+    desc: "Build common package"
+    cmds:
+      - echo "🏗️ Building {{.SERVICE_NAME}} package..."
+      - uv build
+
+  clean:
+    desc: "Clean build artifacts for common"
+    cmds:
+      - echo "🧹 Cleaning {{.SERVICE_NAME}} artifacts..."
+      - rm -rf dist/ build/ .pytest_cache/
+      - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+
+  dev:install:
+    desc: "Install common package in development mode"
+    cmds:
+      - echo "🔧 Installing {{.SERVICE_NAME}} in development mode..."
+      - uv sync
+

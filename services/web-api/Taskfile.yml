@@ -1,0 +1,78 @@
+version: "3"
+
+# Web API Service Taskfile
+# Handles FastAPI web service tasks
+
+vars:
+  SERVICE_NAME: web-api
+  PYTHON_SRC: app
+  TESTS_DIR: tests
+
+tasks:
+  default:
+    desc: "Show available tasks (default command)"
+    cmds:
+      - task --list
+
+  deps:
+    desc: "Install dependencies for web-api service"
+    cmds:
+      - echo "📦 Installing dependencies for {{.SERVICE_NAME}}..."
+      - uv sync --all-groups
+
+  sync:
+    desc: "Sync exact dependencies from lock files"
+    cmds:
+      - echo "🔒 Syncing dependencies for {{.SERVICE_NAME}}..."
+      - uv sync --frozen
+
+  test:
+    desc: "Run tests for web-api service"
+    cmds:
+      - echo "🧪 Testing {{.SERVICE_NAME}}..."
+      - uv run pytest {{.TESTS_DIR}}/ -v
+
+  test:unit:
+    desc: "Run unit tests for web-api service"
+    cmds:
+      - task: test
+
+  lint:
+    desc: "Run linting and formatting for web-api service"
+    cmds:
+      - echo "🔍 Linting {{.SERVICE_NAME}}..."
+      - uv run ruff check {{.PYTHON_SRC}} {{.TESTS_DIR}}
+      - uv run ruff format {{.PYTHON_SRC}} {{.TESTS_DIR}}
+
+  lint:check:
+    desc: "Check linting without fixing"
+    cmds:
+      - echo "🔍 Checking lint for {{.SERVICE_NAME}}..."
+      - uv run ruff check {{.PYTHON_SRC}} {{.TESTS_DIR}} --diff
+      - uv run ruff format {{.PYTHON_SRC}} {{.TESTS_DIR}} --diff
+
+  run:
+    desc: "Run the web-api service"
+    cmds:
+      - echo "🚀 Starting {{.SERVICE_NAME}}..."
+      - uv run uvicorn {{.PYTHON_SRC}}.main:app --reload --host 0.0.0.0 --port 8000
+
+  run:prod:
+    desc: "Run the web-api service in production mode"
+    cmds:
+      - echo "🚀 Starting {{.SERVICE_NAME}} in production mode..."
+      - uv run uvicorn {{.PYTHON_SRC}}.main:app --host 0.0.0.0 --port 8000
+
+  build:
+    desc: "Build web-api service package"
+    cmds:
+      - echo "🏗️ Building {{.SERVICE_NAME}} package..."
+      - uv build
+
+  clean:
+    desc: "Clean build artifacts for web-api"
+    cmds:
+      - echo "🧹 Cleaning {{.SERVICE_NAME}} artifacts..."
+      - rm -rf dist/ build/ .pytest_cache/
+      - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+
