@@ -1,38 +1,6 @@
-[project]
-name = "web-api"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.10,<3.11"
-dependencies = [
-    "common",
-    "fastapi>=0.109.0",
-    "pydantic[email]>=2.11.0,<2.12.0",
-    "python-jose>=3.3.0",
-    "python-multipart>=0.0.9",
-    "sqlalchemy>=1.3.0,<1.4.0",
-    "alembic>=1.13.0",
-    "psycopg2>=2.9.0,<3.0.0",
-    "uvicorn>=0.27.0",
-]
+# Root-level Ruff configuration
+# This file contains shared settings that can be referenced by individual projects
 
-[dependency-groups]
-dev = [
-    "pytest-cov>=4.1.0",
-    "pytest>=7.4.0",
-    "httpx>=0.24.1",
-    "ruff>=0.5.0",
-]
-
-[tool.uv.sources]
-common = { path = "../../packages/common", editable = true }
-
-[[tool.uv.index]]
-name = "CODEARTIFACT"
-url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/"
-default = true
-
-[tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
     ".bzr",
@@ -61,6 +29,9 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
+    "coverage",
+    "test-results",
+    "playwright-report",
 ]
 
 # Same as Black.
@@ -70,7 +41,7 @@ indent-width = 4
 # Assume Python 3.10
 target-version = "py310"
 
-[tool.ruff.lint]
+[lint]
 # Enable a comprehensive set of rules for linting
 select = [
     "E",   # pycodestyle errors
@@ -107,11 +78,11 @@ ignore = [
     "E501",  # line too long (handled by formatter)
 ]
 
-[tool.ruff.lint.per-file-ignores]
+[lint.per-file-ignores]
 # Ignore import violations in __init__.py files
 "__init__.py" = ["E402", "F401"]
 
-[tool.ruff.format]
+[format]
 # Like Black, use double quotes for strings.
 quote-style = "double"
 
@@ -130,9 +101,7 @@ docstring-code-format = false
 # Set the line length limit used when formatting code snippets in docstrings.
 docstring-code-line-length = "dynamic"
 
-[tool.ruff.lint.isort]
-# Use "double" for double quotes.
-quote-style = "double"
+[lint.isort]
 # Force sort within sections.
 force-sort-within-sections = true
 # Split imports into sections.
@@ -144,33 +113,16 @@ section-order = [
     "local-folder",
 ]
 
-[tool.ruff.lint.flake8-quotes]
+[lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "double"
 multiline-quotes = "double"
 
-[tool.ruff.lint.flake8-tidy-imports]
+[lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
-[tool.ruff.lint.pycodestyle]
+[lint.pycodestyle]
 max-doc-length = 120
 
-[tool.ruff.lint.pydocstyle]
+[lint.pydocstyle]
 convention = "google"
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = [
-    "-v",
-    "--tb=short",
-    "--strict-markers",
-    "--disable-warnings",
-]
-markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
-]

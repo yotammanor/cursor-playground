@@ -1,12 +1,11 @@
 version: "3"
 
 # Worker Service Taskfile
-# Handles Celery worker service tasks
+# Handles background worker service tasks
 
 vars:
   SERVICE_NAME: worker
   PYTHON_SRC: worker
-  TESTS_DIR: tests
 
 tasks:
   default:
@@ -20,54 +19,60 @@ tasks:
       - echo "📦 Installing dependencies for {{.SERVICE_NAME}}..."
       - uv sync --all-groups
 
+  deps:dev:
+    desc: "Install development dependencies for worker service"
+    cmds:
+      - echo "🔧 Installing development dependencies for {{.SERVICE_NAME}}..."
+      - uv sync --all-groups
+
   sync:
     desc: "Sync exact dependencies from lock files"
     cmds:
       - echo "🔒 Syncing dependencies for {{.SERVICE_NAME}}..."
       - uv sync --frozen
 
-  test:
-    desc: "Run tests for worker service"
+  db:setup:
+    desc: "Setup PostgreSQL database"
     cmds:
-      - echo "🧪 Testing {{.SERVICE_NAME}}..."
-      - uv run pytest {{.TESTS_DIR}}/ -v
-
-  test:unit:
-    desc: "Run unit tests for worker service"
-    cmds:
-      - task: test
-
-  lint:
-    desc: "Run linting and formatting for worker service"
-    cmds:
-      - echo "🔍 Linting {{.SERVICE_NAME}}..."
-      - uv run ruff check {{.PYTHON_SRC}} {{.TESTS_DIR}}
-      - uv run ruff format {{.PYTHON_SRC}} {{.TESTS_DIR}}
-
-  lint:check:
-    desc: "Check linting without fixing"
-    cmds:
-      - echo "🔍 Checking lint for {{.SERVICE_NAME}}..."
-      - uv run ruff check {{.PYTHON_SRC}} {{.TESTS_DIR}} --diff
-      - uv run ruff format {{.PYTHON_SRC}} {{.TESTS_DIR}} --diff
+      - echo "🗄️ Setting up database for {{.SERVICE_NAME}}..."
+      - echo "Make sure PostgreSQL is running and create database:"
+      - echo "createdb task_management"
+      - echo "Or set DATABASE_URL environment variable"
 
   run:
     desc: "Run the worker service"
     cmds:
       - echo "🚀 Starting {{.SERVICE_NAME}}..."
-      - uv run celery -A {{.PYTHON_SRC}}.main worker --loglevel=info
+      - uv run python -m {{.PYTHON_SRC}}.main
 
-  run:dev:
-    desc: "Run the worker service in development mode"
+  run:celery:
+    desc: "Run the worker service with Celery"
     cmds:
-      - echo "🚀 Starting {{.SERVICE_NAME}} in development mode..."
-      - uv run celery -A {{.PYTHON_SRC}}.main worker --loglevel=debug --reload
+      - echo "🚀 Starting {{.SERVICE_NAME}} with Celery..."
+      - uv run celery -A {{.PYTHON_SRC}}.main.celery_app worker --loglevel=info
 
-  monitor:
-    desc: "Monitor the worker service"
+  lint:
+    desc: "Run linting and formatting for worker service"
     cmds:
-      - echo "📊 Monitoring {{.SERVICE_NAME}}..."
-      - uv run celery -A {{.PYTHON_SRC}}.main flower
+      - echo "🔍 Linting {{.SERVICE_NAME}}..."
+      - task: deps:dev
+      - uv run ruff check {{.PYTHON_SRC}} --fix
+      - uv run ruff format {{.PYTHON_SRC}}
+
+  lint:check:
+    desc: "Check linting without fixing"
+    cmds:
+      - echo "🔍 Checking lint for {{.SERVICE_NAME}}..."
+      - task: deps:dev
+      - uv run ruff check {{.PYTHON_SRC}} --diff
+      - uv run ruff format {{.PYTHON_SRC}} --diff
+
+  format:
+    desc: "Format code only"
+    cmds:
+      - echo "🎨 Formatting {{.SERVICE_NAME}}..."
+      - task: deps:dev
+      - uv run ruff format {{.PYTHON_SRC}}
 
   build:
     desc: "Build worker service package"

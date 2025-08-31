@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.main import app
+from src.main import app
 from common.database import Base, get_db
 from common.models import User
 from common.utils import get_password_hash
@@ -111,7 +111,7 @@ def test_read_user(test_db):
     assert data["email"] == "test@example.com"
 
 
-def test_read_user_not_found():
+def test_read_user_not_found(test_db):
     """Test getting a user that doesn't exist."""
     response = client.get("/api/users/999")
     assert response.status_code == 404
@@ -137,7 +137,7 @@ def test_update_user(test_db):
     assert data["email"] == "test@example.com"
 
 
-def test_update_user_not_found():
+def test_update_user_not_found(test_db):
     """Test updating a user that doesn't exist."""
     response = client.put(
         "/api/users/999",
@@ -163,7 +163,7 @@ def test_delete_user(test_db):
     assert get_response.status_code == 404
 
 
-def test_delete_user_not_found():
+def test_delete_user_not_found(test_db):
     """Test deleting a user that doesn't exist."""
     response = client.delete("/api/users/999")
     assert response.status_code == 404

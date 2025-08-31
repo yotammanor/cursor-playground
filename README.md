@@ -27,7 +27,7 @@ A full-stack task management application with a React frontend and Python micros
 ## Tech Stack
 
 ### Frontend
-- React 18
+- React 19
 - TypeScript
 - Vite 5.x
 - Tailwind CSS v4 (alpha)

@@ -1,11 +1,10 @@
 """Utility functions shared between services."""
 
+from datetime import datetime
 import hashlib
 import secrets
-from datetime import datetime, timedelta
-from typing import Optional
 
-from pydantic import EmailStr
+from pydantic import EmailStr, ValidationError
 
 
 def get_password_hash(password: str) -> str:
@@ -24,13 +23,15 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def is_valid_email(email: str) -> bool:
     """Validate email format."""
+    if email is None:
+        return False
     try:
-        EmailStr.validate(email)
+        EmailStr._validate(email)
         return True
-    except:
+    except (ValueError, ValidationError, TypeError):
         return False
 
 
 def format_datetime(dt: datetime) -> str:
     """Format datetime for display."""
-    return dt.strftime("%Y-%m-%d %H:%M:%S") 
+    return dt.strftime("%Y-%m-%d %H:%M:%S")

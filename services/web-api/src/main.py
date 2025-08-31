@@ -1,10 +1,10 @@
 """Main FastAPI application."""
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from common.database import init_db
-from app.routers import users, tasks
+from .routers import users, tasks
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -28,18 +28,18 @@ app.include_router(tasks.router, prefix="/api/tasks", tags=["tasks"])
 
 
 @app.on_event("startup")
-async def startup_event():
+def startup_event():
     """Initialize database on startup."""
     init_db()
 
 
 @app.get("/")
-async def root():
+def root():
     """Root endpoint."""
     return {"message": "Welcome to the Task Management API"}
 
 
 @app.get("/health")
-async def health_check():
+def health_check():
     """Health check endpoint."""
     return {"status": "healthy"} 

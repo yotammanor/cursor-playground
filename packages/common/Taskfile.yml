@@ -18,7 +18,13 @@ tasks:
     desc: "Install dependencies for common package"
     cmds:
       - echo "📦 Installing dependencies for {{.SERVICE_NAME}}..."
-      - uv sync --all-groups
+      - uv sync
+
+  deps:dev:
+    desc: "Install development dependencies for common package"
+    cmds:
+      - echo "🔧 Installing development dependencies for {{.SERVICE_NAME}}..."
+      - uv sync --extra dev
 
   sync:
     desc: "Sync exact dependencies from lock files"
@@ -26,10 +32,17 @@ tasks:
       - echo "🔒 Syncing dependencies for {{.SERVICE_NAME}}..."
       - uv sync --frozen
 
+  sync:dev:
+    desc: "Sync exact development dependencies from lock files"
+    cmds:
+      - echo "🔒 Syncing development dependencies for {{.SERVICE_NAME}}..."
+      - uv sync --frozen --extra dev
+
   test:
     desc: "Run tests for common package"
     cmds:
       - echo "🧪 Testing {{.SERVICE_NAME}}..."
+      - uv sync --extra dev
       - uv run pytest {{.TESTS_DIR}}/ -v
     status:
       - test -d {{.TESTS_DIR}}
@@ -43,15 +56,24 @@ tasks:
     desc: "Run linting and formatting for common package"
     cmds:
       - echo "🔍 Linting {{.SERVICE_NAME}}..."
-      - uv run ruff check {{.PYTHON_SRC}}
+      - uv sync --extra dev
+      - uv run ruff check {{.PYTHON_SRC}} --fix
       - uv run ruff format {{.PYTHON_SRC}}
 
   lint:check:
     desc: "Check linting without fixing"
     cmds:
       - echo "🔍 Checking lint for {{.SERVICE_NAME}}..."
+      - uv sync --extra dev
       - uv run ruff check {{.PYTHON_SRC}} --diff
       - uv run ruff format {{.PYTHON_SRC}} --diff
+
+  format:
+    desc: "Format code only"
+    cmds:
+      - echo "🎨 Formatting {{.SERVICE_NAME}}..."
+      - uv sync --extra dev
+      - uv run ruff format {{.PYTHON_SRC}}
 
   build:
     desc: "Build common package"
@@ -71,4 +93,18 @@ tasks:
     cmds:
       - echo "🔧 Installing {{.SERVICE_NAME}} in development mode..."
       - uv sync
+
+  doctor:
+    desc: "Check Python development dependencies (uv)"
+    silent: true
+    cmds:
+      - echo "🔍 Checking Python dependencies..."
+      - |
+        if command -v uv >/dev/null 2>&1; then
+          UV_VERSION=$(uv --version)
+          echo "✅ uv is installed ($UV_VERSION)"
+        else
+          echo "❌ uv is not installed or not in PATH"
+          echo "   Install uv: https://docs.astral.sh/uv/getting-started/installation/"
+        fi
 

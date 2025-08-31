@@ -18,9 +18,9 @@ includes:
     dir: ./packages/common
     internal: true
   app:
+    internal: true
     taskfile: ./app/Taskfile.yml
     dir: ./app
-    internal: true
 
 
 tasks:
@@ -45,6 +45,7 @@ tasks:
   # === Testing Tasks ===
   test:
     desc: "Run all tests (unit + e2e)"
+    aliases: [tests]
     cmds:
       - task: python:test
       - task: app:test
@@ -58,6 +59,20 @@ tasks:
       - task: app:lint
       - echo "✅ All linting completed"
 
+  lint:check:
+    desc: "Check all linting without fixing"
+    cmds:
+      - task: python:lint:check
+      - task: app:lint
+      - echo "✅ All linting checks completed"
+
+  format:
+    desc: "Format all code"
+    cmds:
+      - task: python:format
+      - task: app:lint
+      - echo "✅ All formatting completed"
+
   # === Build Tasks ===
   build:
     desc: "Build all services and frontend"
@@ -69,34 +84,26 @@ tasks:
   # === Utility Tasks ===
   doctor:
     desc: "Check for required development dependencies"
+    silent: true
     cmds:
       - echo "🔍 Checking development dependencies..."
+      - task: app:doctor
+      - task: common:doctor
       - |
-        echo "Checking nvm..."
-        if command -v nvm >/dev/null 2>&1; then
-          echo "✅ nvm is installed"
-          nvm --version
+        if command -v aws >/dev/null 2>&1; then
+          AWS_VERSION=$(aws --version)
+          echo "✅ awscli is installed ($AWS_VERSION)"
         else
-          echo "❌ nvm is not installed or not in PATH"
-          echo "   Install nvm: https://github.com/nvm-sh/nvm#installing-and-updating"
+          echo "❌ awscli is not installed or not in PATH"
+          echo "   Install awscli: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"
         fi
       - |
-        echo "Checking uv..."
-        if command -v uv >/dev/null 2>&1; then
-          echo "✅ uv is installed"
-          uv --version
+        if [ "$SHELL" = "/bin/zsh" ] || [ "$0" = "zsh" ] || [ "$(basename $SHELL)" = "zsh" ]; then
+          ZSH_VERSION=$(zsh --version 2>/dev/null | head -n1 || echo "version check failed")
+          echo "✅ zsh is the current shell ($ZSH_VERSION)"
         else
-          echo "❌ uv is not installed or not in PATH"
-          echo "   Install uv: https://docs.astral.sh/uv/getting-started/installation/"
-        fi
-      - |
-        echo "Checking yarn..."
-        if command -v yarn >/dev/null 2>&1; then
-          echo "✅ yarn is installed"
-          yarn --version
-        else
-          echo "❌ yarn is not installed or not in PATH"
-          echo "   Install yarn: npm install -g yarn"
+          echo "⚠️  zsh is not the current shell (current: $SHELL)"
+          echo "   Consider switching to zsh for better development experience"
         fi
       - echo "🏥 Doctor check completed"
 
@@ -144,6 +151,23 @@ tasks:
       - task: common:lint
       - task: web-api:lint
       - task: worker:lint
+
+  python:lint:check:
+    desc: "Check Python linting without fixing"
+    internal: true
+    cmds:
+      - task: common:lint:check
+      - task: web-api:lint:check
+      - task: worker:lint:check
+
+  python:format:
+    desc: "Format Python code only"
+    internal: true
+    cmds:
+      - echo "🎨 Formatting Python code..."
+      - task: common:format
+      - task: web-api:format
+      - task: worker:format
 
   python:build:
     desc: "Build Python packages"
