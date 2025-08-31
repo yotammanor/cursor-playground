@@ -14,12 +14,13 @@ A full-stack task management application with a React frontend and Python micros
 │   │   ├── pages/        # Page components
 │   │   └── types/        # TypeScript type definitions
 │   └── tests/            # End-to-end tests with Playwright
+├── packages/             # Shared backend libraries
+│   └── common/           # Shared code between services
 ├── services/             # Server-side services
 │   ├── web-api/          # FastAPI web service
 │   │   ├── app/          # API implementation
 │   │   └── tests/        # API unit tests
-│   ├── worker/           # Background worker service
-│   └── common/           # Shared code between services
+│   └── worker/           # Background worker service
 └── devops/               # Infrastructure and deployment code
 ```
 
@@ -63,3 +64,5 @@ This project uses **Shadcn UI** with **Tailwind CSS v4** for the frontend. This 
 - Node.js 18.x
 - Python 3.10
 - Yarn 4.5.x
+- uv 0.8.6
+- Task.dev 3.44.1
