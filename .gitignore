@@ -71,8 +71,14 @@ logs/
 *.log
 
 # Playwright
-/test-results/
-/playwright-report/
-/playwright/.cache/ 
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Test results and coverage
+**/test-results/
+**/playwright-report/
+**/coverage/
+**/.nyc_output/
 
 .history/
