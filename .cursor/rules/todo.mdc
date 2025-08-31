@@ -6,3 +6,4 @@ alwaysApply: false
 
 - always work on a single todo at most.
 - You are encouraged to break down a single todo item to multiple substeps.
+- Never delete todo.md files without permissions
