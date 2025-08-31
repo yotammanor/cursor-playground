@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import React from 'react'
 
 // Mock react-query
 vi.mock('react-query', async () => {
@@ -25,8 +26,8 @@ vi.mock('react-router-dom', async () => {
     ...actual,
     useNavigate: () => vi.fn(),
     useParams: () => ({}),
-    Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
-      <a href={to}>{children}</a>
-    ),
+    Link: ({ children, to }: { children: React.ReactNode; to: string }) => {
+      return React.createElement('a', { href: to }, children)
+    },
   }
 }) 
