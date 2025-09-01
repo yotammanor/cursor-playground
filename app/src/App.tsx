@@ -6,6 +6,7 @@ import Tasks from './pages/Tasks';
 import UserDetail from './pages/UserDetail';
 import UserCreate from './pages/UserCreate';
 import TaskDetail from './pages/TaskDetail';
+import TaskCreate from './pages/TaskCreate';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="users/new" element={<UserCreate />} />
           <Route path="users/:id" element={<UserDetail />} />
           <Route path="tasks" element={<Tasks />} />
+          <Route path="tasks/new" element={<TaskCreate />} />
           <Route path="tasks/:id" element={<TaskDetail />} />
           <Route path="*" element={<NotFound />} />
         </Route>

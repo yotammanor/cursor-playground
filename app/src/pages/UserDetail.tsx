@@ -167,14 +167,10 @@ const UserDetail = () => {
                   <p className="text-sm text-gray-600">{task.description}</p>
                   <span
                     className={`inline-block px-2 py-1 text-xs rounded-full mt-2 ${
-                      task.status === 'completed'
-                        ? 'bg-green-100 text-green-800'
-                        : task.status === 'in_progress'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-gray-100 text-gray-800'
+                      task.is_completed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                     }`}
                   >
-                    {task.status.replace('_', ' ')}
+                    {task.is_completed ? 'Completed' : 'Pending'}
                   </span>
                 </div>
               ))}

@@ -29,10 +29,8 @@ const TaskSchema = z.object({
   id: z.number(),
   title: z.string(),
   description: z.string().optional(),
-  status: z.enum(['pending', 'in_progress', 'completed']),
-  due_date: z.string().optional(),
+  is_completed: z.boolean(),
   user_id: z.number(),
-  assignee_name: z.string().optional(),
   created_at: z.string(),
   updated_at: z.string(),
 });
@@ -40,16 +38,13 @@ const TaskSchema = z.object({
 const TaskCreateSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
-  status: z.enum(['pending', 'in_progress', 'completed']).default('pending'),
-  due_date: z.string().optional(),
   user_id: z.number(),
 });
 
 const TaskUpdateSchema = z.object({
   title: z.string().min(1, 'Title is required').optional(),
   description: z.string().optional(),
-  status: z.enum(['pending', 'in_progress', 'completed']).optional(),
-  due_date: z.string().optional(),
+  is_completed: z.boolean().optional(),
   user_id: z.number().optional(),
 });
 

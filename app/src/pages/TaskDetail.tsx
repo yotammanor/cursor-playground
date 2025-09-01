@@ -17,13 +17,11 @@ const TaskDetail = () => {
   const [formData, setFormData] = useState<{
     title: string;
     description: string;
-    status: 'pending' | 'in_progress' | 'completed';
-    due_date: string;
+    is_completed: boolean;
   }>({
     title: '',
     description: '',
-    status: 'pending',
-    due_date: '',
+    is_completed: false,
   });
 
   const {
@@ -61,8 +59,7 @@ const TaskDetail = () => {
     setFormData({
       title: task.title,
       description: task.description || '',
-      status: task.status,
-      due_date: task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : '',
+      is_completed: task.is_completed,
     });
     setIsEditing(true);
   };
@@ -147,48 +144,33 @@ const TaskDetail = () => {
             )}
           </div>
           <div>
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="is_completed">Status</Label>
             {isEditing ? (
-              <select
-                id="status"
-                value={formData.status}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setFormData({ ...formData, status: e.target.value as 'pending' | 'in_progress' | 'completed' })
-                }
-                className="w-full p-2 border rounded-md"
-              >
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
-              </select>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="is_completed"
+                  checked={formData.is_completed}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setFormData({ ...formData, is_completed: e.target.checked })
+                  }
+                  className="w-4 h-4"
+                />
+                <Label htmlFor="is_completed">Completed</Label>
+              </div>
             ) : (
               <span
                 className={`inline-block px-2 py-1 text-sm rounded-full ${
-                  task.status === 'completed'
-                    ? 'bg-green-100 text-green-800'
-                    : task.status === 'in_progress'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800'
+                  task.is_completed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                 }`}
               >
-                {task.status.replace('_', ' ')}
+                {task.is_completed ? 'Completed' : 'Pending'}
               </span>
             )}
           </div>
           <div>
-            <Label htmlFor="due_date">Due Date</Label>
-            {isEditing ? (
-              <Input
-                id="due_date"
-                type="date"
-                value={formData.due_date}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFormData({ ...formData, due_date: e.target.value })
-                }
-              />
-            ) : (
-              <p className="text-lg">{task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}</p>
-            )}
+            <Label htmlFor="user_id">Assigned User</Label>
+            <p className="text-lg">User ID: {task.user_id}</p>
           </div>
         </CardContent>
       </Card>
