@@ -1,7 +1,7 @@
 # Debug UI Issues
 
 ## Overview
-This command provides a comprehensive approach to debugging UI issues in web applications. It covers various problem types including API issues, rendering problems, routing errors, state management issues, and more.
+This command provides a systematic approach to debugging UI issues using Playwright MCP tools for interactive investigation and testing.
 
 ## When to Use
 - Components not rendering or displaying incorrectly
@@ -9,25 +9,19 @@ This command provides a comprehensive approach to debugging UI issues in web app
 - Navigation/routing problems
 - Data not displaying or updating
 - Forms not working properly
-- Performance issues or crashes
-- Styling/layout problems
 - Interactive elements not responding
 
 ## Investigation Flow
 
-### 1. Identify the Problem Type
-- **Visual Issues**: Components not rendering, wrong layout, missing elements
-- **Functional Issues**: Buttons not working, forms not submitting, data not loading
-- **Navigation Issues**: Routes not working, wrong pages loading
-- **Data Issues**: API errors, validation failures, missing data
-- **Performance Issues**: Slow loading, crashes, memory leaks
+### 1. Identify the Problem
+- Navigate to problematic page using Playwright
+- Observe what's rendered vs expected
+- Check for error messages or loading states
 
 ### 2. Gather Information
-- **Browser Console**: Check for JavaScript errors, warnings, and logs
-- **Network Tab**: Examine API calls, failed requests, response data
-- **Page State**: Observe what's actually rendered vs expected
-- **User Actions**: Note what steps led to the problem
-- **Environment**: Check if issue is environment-specific
+- **Console Messages**: Use `mcp_playwright_browser_console_messages`
+- **Network Requests**: Use `mcp_playwright_browser_network_requests`
+- **Page State**: Use `mcp_playwright_browser_snapshot` to capture current state
 
 ### 3. Systematic Investigation
 
@@ -36,28 +30,17 @@ This command provides a comprehensive approach to debugging UI issues in web app
 # Test API endpoints directly
 curl -s http://localhost:8000/api/[resource]/ | jq .
 curl -s http://localhost:8000/api/[resource]/[id] | jq .
-
-# Check backend logs
-# Look for validation errors, missing endpoints, schema mismatches
 ```
 
 #### For Component Issues
 - Check component props and state
 - Verify data flow from parent components
 - Look for conditional rendering logic
-- Check for missing dependencies or imports
 
 #### For Routing Issues
 - Verify route definitions in App.tsx
 - Check for conflicting route patterns
 - Ensure components are properly imported
-- Look for route parameter handling issues
-
-#### For State Management Issues
-- Check React Query cache and state
-- Verify state updates and re-renders
-- Look for stale closures or race conditions
-- Check for proper dependency arrays in hooks
 
 ### 4. Common Problem Categories
 
@@ -76,32 +59,14 @@ curl -s http://localhost:8000/api/[resource]/[id] | jq .
 - **Symptoms**: 404 errors, wrong components rendering, broken links
 - **Solution**: Fix route definitions, component imports, and parameter handling
 
-#### State Management Problems
-- **Problem**: Data not updating or persisting correctly
-- **Symptoms**: Stale data, UI not reflecting changes, infinite loops
-- **Solution**: Fix React Query configuration, state updates, and dependencies
-
-#### Styling/Layout Issues
-- **Problem**: Visual appearance not matching expectations
-- **Symptoms**: Wrong colors, broken layouts, missing styles
-- **Solution**: Check CSS classes, Tailwind utilities, and responsive design
-
 ### 5. Debugging Tools
 
-#### Browser DevTools
-- **Console**: JavaScript errors and logs
-- **Network**: API calls and responses
-- **Elements**: DOM structure and CSS
-- **Performance**: Loading times and bottlenecks
+#### Playwright MCP Tools (Primary)
+Use Playwright MCP tools for interactive debugging when available. If these tools are not available, consult the user for alternative debugging approaches.
 
-#### Playwright (for automated testing)
-- **Page Navigation**: Test user flows
-- **Element Interaction**: Click, type, verify
-- **Network Monitoring**: Capture API calls
-- **Screenshot/Video**: Visual debugging
 
 #### Code Analysis
-- **Linting**: Code quality and potential issues
+- **Linting**: `task lint`
 - **Type Checking**: TypeScript errors and mismatches
 - **Dependency Analysis**: Missing or conflicting packages
 
@@ -110,18 +75,15 @@ curl -s http://localhost:8000/api/[resource]/[id] | jq .
 #### Make Changes
 - Update types, schemas, or components
 - Fix routing or state management
-- Adjust styling or layout
 - Handle edge cases and errors
 
 #### Test the Fix
-- Verify the specific issue is resolved
+- Use Playwright to verify the issue is resolved
 - Test related functionality
 - Check for regressions
-- Run automated tests if available
 
 #### Code Quality
 - Run linter: `task lint`
-- Check types: `task type-check` (if available)
 - Run tests: `task test`
 - Commit changes with descriptive messages
 
@@ -129,30 +91,29 @@ curl -s http://localhost:8000/api/[resource]/[id] | jq .
 
 ### Scenario 1: API Schema Mismatch
 ```bash
-# 1. Identify: "Error loading users" message
-# 2. Check: Network tab shows 422 errors
-# 3. Test: curl -s http://localhost:8000/api/users/ | jq .
-# 4. Compare: Backend schema vs frontend types
+# 1. Navigate to problematic page using Playwright
+# 2. Check console for errors
+# 3. Check network requests for failed API calls
+# 4. Test API endpoint directly: curl -s http://localhost:8000/api/users/ | jq .
 # 5. Fix: Update frontend to match backend
-# 6. Test: Verify users load correctly
+# 6. Test: Verify fix works correctly
 ```
 
 ### Scenario 2: Component Not Rendering
 ```bash
-# 1. Identify: Component shows loading state indefinitely
-# 2. Check: Console for errors, props for undefined values
-# 3. Debug: Add console.logs, check conditional rendering
+# 1. Navigate to page using Playwright
+# 2. Check page state and rendered content
+# 3. Check console for errors
 # 4. Fix: Handle undefined props, add error boundaries
-# 5. Test: Verify component renders with various data states
+# 5. Test: Verify component renders correctly
 ```
 
 ### Scenario 3: Routing Issue
 ```bash
-# 1. Identify: /users/new shows wrong page or 404
-# 2. Check: Route definitions, component imports
-# 3. Debug: Verify route order, check for conflicts
-# 4. Fix: Add missing route, fix import, reorder routes
-# 5. Test: Navigate to route, verify correct component loads
+# 1. Navigate to problematic route using Playwright
+# 2. Check page state and rendered content
+# 3. Fix: Add missing route, fix import, reorder routes
+# 4. Test: Navigate to route, verify correct component loads
 ```
 
 ## Prevention Strategies
@@ -161,16 +122,12 @@ curl -s http://localhost:8000/api/[resource]/[id] | jq .
 2. **Schema Validation**: Validate API responses with Zod or similar
 3. **Error Boundaries**: Handle errors gracefully in React components
 4. **Testing**: Write tests for critical user flows
-5. **Documentation**: Document API contracts and component interfaces
-6. **Code Review**: Review changes for potential issues
-7. **Monitoring**: Add logging and error tracking
+5. **Code Review**: Review changes for potential issues
 
 ## Related Commands
 - `task doctor` - Check development environment
 - `task lint` - Validate code quality
 - `task test` - Run automated tests
-- `task build` - Check for build errors
-- `task type-check` - Verify TypeScript types (if available)
 
 ## Quick Reference
 
@@ -178,15 +135,14 @@ curl -s http://localhost:8000/api/[resource]/[id] | jq .
 - **422 Unprocessable Entity**: Schema/validation mismatch
 - **404 Not Found**: Missing route or API endpoint
 - **500 Internal Server Error**: Backend issue
-- **CORS errors**: Cross-origin configuration
 - **Type errors**: TypeScript/JavaScript type mismatches
 
 ### Debugging Checklist
-- [ ] Check browser console for errors
+- [ ] Navigate to problematic page using Playwright
+- [ ] Check console for errors
 - [ ] Verify network requests and responses
 - [ ] Test API endpoints directly
 - [ ] Check component props and state
 - [ ] Verify routing configuration
 - [ ] Run linter and tests
-- [ ] Check for missing dependencies
-- [ ] Verify environment configuration
+- [ ] Test fix to ensure it works correctly
