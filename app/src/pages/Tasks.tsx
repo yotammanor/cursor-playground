@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getTasks } from '../api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
 import { Link } from 'react-router-dom';
 import { Plus, CheckCircle, Circle, User, Clock, UserCheck, AlertCircle } from 'lucide-react';
 
@@ -31,16 +32,16 @@ const Tasks = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case 'done':
-        return 'bg-green-100 text-green-800';
+        return 'success';
       case 'wip':
-        return 'bg-blue-100 text-blue-800';
+        return 'secondary';
       case 'failed':
-        return 'bg-red-100 text-red-800';
+        return 'destructive';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'secondary';
     }
   };
 
@@ -76,10 +77,10 @@ const Tasks = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   {task.title}
-                  <span className={`px-2 py-1 text-xs rounded-full flex items-center ${getStatusColor(task.status)}`}>
+                  <Badge variant={getStatusVariant(task.status)} className="flex items-center">
                     {getStatusIcon(task.status)}
                     {getStatusText(task.status)}
-                  </span>
+                  </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
