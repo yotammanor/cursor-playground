@@ -5,7 +5,7 @@ version: "3"
 
 vars:
   SERVICE_NAME: common
-  PYTHON_SRC: src/common
+  PYTHON_SRC: common
   TESTS_DIR: tests
 
 tasks:
@@ -53,8 +53,6 @@ tasks:
       - uv sync --extra dev
       - uv run ruff check {{.PYTHON_SRC}} --fix
       - uv run ruff format {{.PYTHON_SRC}}
-
-
 
   format:
     desc: "Format code only"

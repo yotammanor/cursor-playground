@@ -78,6 +78,7 @@ tasks:
 
   run:
     desc: "Run the api service"
+    deps: [deps:dev, db:migrate]
     aliases: [run:dev, dev]
     cmds:
       - uv run .venv/bin/python -m uvicorn src.main:app --reload --host 0.0.0.0 --port {{.PORT}}

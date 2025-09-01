@@ -14,8 +14,8 @@ includes:
     dir: ./services/worker
     internal: true
   common:
-    taskfile: ./packages/common/Taskfile.yml
-    dir: ./packages/common
+    taskfile: ./packages/playground_common/Taskfile.yml
+    dir: ./packages/playground_common
     internal: true
   app:
     internal: true

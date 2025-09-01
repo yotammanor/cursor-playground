@@ -67,7 +67,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.13.0" },
-    { name = "common", editable = "../../packages/common" },
+    { name = "common", editable = "../../packages/playground_common" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.109.0" },
     { name = "psycopg2", specifier = ">=2.9.0,<3.0.0" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.11.0,<2.12.0" },
@@ -118,7 +118,7 @@ wheels = [
 [[package]]
 name = "common"
 version = "0.1.0"
-source = { editable = "../../packages/common" }
+source = { editable = "../../packages/playground_common" }
 dependencies = [
     { name = "email-validator" },
     { name = "psycopg2" },

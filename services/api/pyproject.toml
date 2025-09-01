@@ -25,7 +25,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-common = { path = "../../packages/common", editable = true }
+common = { path = "../../packages/playground_common", editable = true }
 
 [[tool.uv.index]]
 name = "CODEARTIFACT"
