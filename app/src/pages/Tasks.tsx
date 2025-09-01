@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Skeleton } from '../components/ui/skeleton';
+import { Alert, AlertDescription } from '../components/ui/alert';
 import { Link } from 'react-router-dom';
 import { Plus, CheckCircle, Circle, User, Clock, UserCheck, AlertCircle } from 'lucide-react';
 
@@ -40,10 +41,10 @@ const Tasks = () => {
     );
   if (error)
     return (
-      <div className="flex justify-center p-8 text-red-500">
-        <AlertCircle className="h-4 w-4 mr-2" />
-        Error loading tasks. Please try again later.
-      </div>
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>Error loading tasks. Please try again later.</AlertDescription>
+      </Alert>
     );
 
   const getStatusIcon = (status: string) => {

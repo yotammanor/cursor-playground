@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input, Textarea } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Alert, AlertDescription } from '../components/ui/alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +19,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../components/ui/alert-dialog';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '../components/ui/breadcrumb';
+import { Separator } from '../components/ui/separator';
 import { Trash2, Edit, Save, X, Clock, UserCheck, AlertCircle, CheckCircle } from 'lucide-react';
 
 const TaskDetail = () => {
@@ -62,8 +72,20 @@ const TaskDetail = () => {
   });
 
   if (isLoading) return <div className="flex justify-center p-8">Loading task...</div>;
-  if (error) return <div className="flex justify-center p-8 text-red-500">Error loading task</div>;
-  if (!task) return <div className="flex justify-center p-8">Task not found</div>;
+  if (error)
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>Error loading task. Please try again later.</AlertDescription>
+      </Alert>
+    );
+  if (!task)
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>Task not found.</AlertDescription>
+      </Alert>
+    );
 
   const handleEdit = () => {
     setFormData({
@@ -126,6 +148,18 @@ const TaskDetail = () => {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/tasks">Tasks</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{task.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Task Details</h1>
         <div className="flex space-x-2">
@@ -224,6 +258,8 @@ const TaskDetail = () => {
         </CardContent>
       </Card>
 
+      <Separator />
+
       {/* Worker Information Card */}
       {(task.worker_id || task.started_at || task.completed_at || task.error_message) && (
         <Card>
@@ -273,6 +309,8 @@ const TaskDetail = () => {
           </CardContent>
         </Card>
       )}
+
+      <Separator />
 
       {/* Timestamps Card */}
       <Card>

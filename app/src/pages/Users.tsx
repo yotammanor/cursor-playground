@@ -2,8 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getUsers } from '../api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import { Alert, AlertDescription } from '../components/ui/alert';
 import { Link } from 'react-router-dom';
-import { Plus, Mail, User } from 'lucide-react';
+import { Plus, Mail, User, AlertCircle } from 'lucide-react';
 
 const Users = () => {
   const {
@@ -17,7 +18,13 @@ const Users = () => {
   });
 
   if (isLoading) return <div className="flex justify-center p-8">Loading users...</div>;
-  if (error) return <div className="flex justify-center p-8 text-red-500">Error loading users</div>;
+  if (error)
+    return (
+      <Alert variant="destructive" className="max-w-md mx-auto">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>Error loading users. Please try again later.</AlertDescription>
+      </Alert>
+    );
 
   return (
     <div className="space-y-6">
