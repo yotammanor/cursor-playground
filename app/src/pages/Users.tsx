@@ -3,7 +3,7 @@ import { getUsers } from '../api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Link } from 'react-router-dom';
-import { Plus, Mail, Phone } from 'lucide-react';
+import { Plus, Mail, User } from 'lucide-react';
 
 const Users = () => {
   const {
@@ -35,7 +35,7 @@ const Users = () => {
           <Link key={user.id} to={`/users/${user.id}`}>
             <Card className="hover:shadow-lg transition-shadow cursor-pointer">
               <CardHeader>
-                <CardTitle>{user.name}</CardTitle>
+                <CardTitle>{user.username}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -43,12 +43,10 @@ const Users = () => {
                     <Mail className="w-4 h-4 mr-2" />
                     {user.email}
                   </div>
-                  {user.phone && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Phone className="w-4 h-4 mr-2" />
-                      {user.phone}
-                    </div>
-                  )}
+                  <div className="flex items-center text-sm text-gray-600">
+                    <User className="w-4 h-4 mr-2" />
+                    {user.is_active ? 'Active' : 'Inactive'}
+                  </div>
                 </div>
               </CardContent>
             </Card>

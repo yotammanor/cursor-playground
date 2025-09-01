@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Trash2, Edit, Save, X } from 'lucide-react';
+import { Trash2, Edit, Save, X, User } from 'lucide-react';
 
 const UserDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,9 +15,9 @@ const UserDetail = () => {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
-    phone: '',
+    password: '',
   });
 
   const {
@@ -58,9 +58,9 @@ const UserDetail = () => {
 
   const handleEdit = () => {
     setFormData({
-      name: user.name,
+      username: user.username,
       email: user.email,
-      phone: user.phone || '',
+      password: '',
     });
     setIsEditing(true);
   };
@@ -116,15 +116,15 @@ const UserDetail = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="username">Username</Label>
             {isEditing ? (
               <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                id="username"
+                value={formData.username}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               />
             ) : (
-              <p className="text-lg">{user.name}</p>
+              <p className="text-lg">{user.username}</p>
             )}
           </div>
           <div>
@@ -141,16 +141,13 @@ const UserDetail = () => {
             )}
           </div>
           <div>
-            <Label htmlFor="phone">Phone</Label>
-            {isEditing ? (
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              />
-            ) : (
-              <p className="text-lg">{user.phone || 'Not provided'}</p>
-            )}
+            <Label htmlFor="is_active">Status</Label>
+            <div className="flex items-center space-x-2">
+              <User className="w-4 h-4" />
+              <span className={`text-lg ${user.is_active ? 'text-green-600' : 'text-red-600'}`}>
+                {user.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>

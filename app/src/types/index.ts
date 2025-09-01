@@ -1,22 +1,23 @@
 export interface User {
   id: number;
-  name: string;
+  username: string;
   email: string;
-  phone?: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
 export interface UserCreateInput {
-  name: string;
+  username: string;
   email: string;
-  phone?: string;
+  password: string;
 }
 
 export interface UserUpdateInput {
-  name?: string;
+  username?: string;
   email?: string;
-  phone?: string;
+  password?: string;
+  is_active?: boolean;
 }
 
 export interface Task {

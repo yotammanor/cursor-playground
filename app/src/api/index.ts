@@ -5,23 +5,24 @@ import { User, UserCreateInput, UserUpdateInput, Task, TaskCreateInput, TaskUpda
 // Zod schemas for validation
 const UserSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  username: z.string(),
   email: z.string().email(),
-  phone: z.string().optional(),
+  is_active: z.boolean(),
   created_at: z.string(),
   updated_at: z.string(),
 });
 
 const UserCreateSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  username: z.string().min(1, 'Username is required'),
   email: z.string().email('Invalid email format'),
-  phone: z.string().optional(),
+  password: z.string().min(1, 'Password is required'),
 });
 
 const UserUpdateSchema = z.object({
-  name: z.string().min(1, 'Name is required').optional(),
+  username: z.string().min(1, 'Username is required').optional(),
   email: z.string().email('Invalid email format').optional(),
-  phone: z.string().optional(),
+  password: z.string().optional(),
+  is_active: z.boolean().optional(),
 });
 
 const TaskSchema = z.object({

@@ -12,9 +12,9 @@ const UserCreate = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [formData, setFormData] = useState({
-    name: '',
+    username: '',
     email: '',
-    phone: '',
+    password: '',
   });
 
   const createMutation = useMutation({
@@ -52,8 +52,15 @@ const UserCreate = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="name">Name *</Label>
-              <Input id="name" name="name" type="text" value={formData.name} onChange={handleInputChange} required />
+              <Label htmlFor="username">Username *</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                value={formData.username}
+                onChange={handleInputChange}
+                required
+              />
             </div>
             <div>
               <Label htmlFor="email">Email *</Label>
@@ -67,8 +74,15 @@ const UserCreate = () => {
               />
             </div>
             <div>
-              <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} />
+              <Label htmlFor="password">Password *</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              />
             </div>
             <div className="flex space-x-2">
               <Button type="submit" disabled={createMutation.isPending}>
