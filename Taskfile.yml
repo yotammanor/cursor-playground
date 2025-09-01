@@ -29,7 +29,9 @@ tasks:
     desc: "Set up the entire development environment (includes dev dependencies)"
     aliases: [install]
     cmds:
-      - task: python:deps:dev
+      - task: common:deps:dev
+      - task: api:deps:dev
+      - task: worker:deps:dev
       - task: app:deps
 
 
@@ -42,22 +44,22 @@ tasks:
   test:
     desc: "Run all tests (unit + e2e)"
     aliases: [tests]
-    deps: [python:test, app:test]
+    deps: [common:test, api:test, worker:test, app:test]
 
 
   lint:
     desc: "Run all linters and formatters"
-    deps: [python:lint, app:lint]
+    deps: [common:lint, api:lint, worker:lint, app:lint]
 
 
   format:
     desc: "Format all code"
-    deps: [python:format, app:format]
+    deps: [common:format, api:format, worker:format, app:format]
 
 
   build:
     desc: "Build all services and frontend (production dependencies only)"
-    deps: [python:build:prod, app:build]
+    deps: [common:build, api:build, worker:build, app:build]
 
 
   doctor:
@@ -149,34 +151,3 @@ tasks:
     cmds:
       - task --list
 
-  python:deps:
-    desc: "Install Python dependencies for all services (production only)"
-    internal: true
-    deps: [common:deps, api:deps, worker:deps]
-
-  python:deps:dev:
-    desc: "Install Python dependencies for all services (including dev dependencies)"
-    internal: true
-    deps: [common:deps:dev, api:deps:dev, worker:deps:dev]
-
-
-  python:test:
-    desc: "Run Python tests for all services"
-    internal: true
-    deps: [common:test, api:test, worker:test]
-
-  python:lint:
-    desc: "Run Python linting and formatting"
-    internal: true
-    deps: [common:lint, api:lint, worker:lint]
-
-
-  python:format:
-    desc: "Format Python code only"
-    internal: true
-    deps: [common:format, api:format, worker:format]
-
-  python:build:
-    desc: "Build Python packages (production dependencies only)"
-    internal: true
-    deps: [common:build, api:build, worker:build]
