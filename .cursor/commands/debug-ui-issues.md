@@ -19,9 +19,9 @@ This command provides a systematic approach to debugging UI issues using Playwri
 - Check for error messages or loading states
 
 ### 2. Gather Information
-- **Console Messages**: Use `mcp_playwright_browser_console_messages`
-- **Network Requests**: Use `mcp_playwright_browser_network_requests`
-- **Page State**: Use `mcp_playwright_browser_snapshot` to capture current state
+- **Console Messages**: Use Playwright to check for JavaScript errors and logs
+- **Network Requests**: Monitor API calls and responses
+- **Page State**: Capture current page state and rendered content
 
 ### 3. Systematic Investigation
 
@@ -64,6 +64,12 @@ curl -s http://localhost:8000/api/[resource]/[id] | jq .
 #### Playwright MCP Tools (Primary)
 Use Playwright MCP tools for interactive debugging when available. If these tools are not available, consult the user for alternative debugging approaches.
 
+- **Navigation**: Navigate to pages and capture state
+- **Page State**: Capture current page state and elements
+- **Console**: Check for JavaScript errors and logs
+- **Network**: Monitor API calls and responses
+- **Interaction**: Click, type, and interact with elements
+- **Waiting**: Wait for elements or time to pass
 
 #### Code Analysis
 - **Linting**: `task lint`
@@ -86,35 +92,6 @@ Use Playwright MCP tools for interactive debugging when available. If these tool
 - Run linter: `task lint`
 - Run tests: `task test`
 - Commit changes with descriptive messages
-
-## Example Debugging Scenarios
-
-### Scenario 1: API Schema Mismatch
-```bash
-# 1. Navigate to problematic page using Playwright
-# 2. Check console for errors
-# 3. Check network requests for failed API calls
-# 4. Test API endpoint directly: curl -s http://localhost:8000/api/users/ | jq .
-# 5. Fix: Update frontend to match backend
-# 6. Test: Verify fix works correctly
-```
-
-### Scenario 2: Component Not Rendering
-```bash
-# 1. Navigate to page using Playwright
-# 2. Check page state and rendered content
-# 3. Check console for errors
-# 4. Fix: Handle undefined props, add error boundaries
-# 5. Test: Verify component renders correctly
-```
-
-### Scenario 3: Routing Issue
-```bash
-# 1. Navigate to problematic route using Playwright
-# 2. Check page state and rendered content
-# 3. Fix: Add missing route, fix import, reorder routes
-# 4. Test: Navigate to route, verify correct component loads
-```
 
 ## Prevention Strategies
 
