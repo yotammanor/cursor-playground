@@ -44,9 +44,9 @@ test('task management flow', async ({ page }) => {
   const testEmail = `test_${Date.now()}@example.com`;
   const testPassword = 'password123';
 
-  await page.getByTestId('username-input').fill(testUsername);
-  await page.getByTestId('email-input').fill(testEmail);
-  await page.getByTestId('password-input').fill(testPassword);
+  await page.getByLabel('Username *').fill(testUsername);
+  await page.getByLabel('Email *').fill(testEmail);
+  await page.getByLabel('Password *').fill(testPassword);
 
   // Submit the user form
   const userResponsePromise = page.waitForResponse(
@@ -54,7 +54,7 @@ test('task management flow', async ({ page }) => {
     { timeout: 10000 }
   );
 
-  await page.getByTestId('create-user-button').click();
+  await page.getByRole('button', { name: 'Create User' }).click();
   console.log('Clicked Create User button');
 
   try {
@@ -101,7 +101,7 @@ test('task management flow', async ({ page }) => {
   console.log('Clicked Add Task button');
 
   // Verify we're on the Create Task page
-  await expect(page.locator('h1')).toContainText('Create Task');
+  await expect(page.locator('h1')).toContainText('Create New Task');
 
   // Step 5: Fill out the task form
   const testTaskTitle = `Test Task ${Date.now()}`;
@@ -109,7 +109,7 @@ test('task management flow', async ({ page }) => {
 
   await page.getByLabel('Title').fill(testTaskTitle);
   await page.getByLabel('Description').fill(testTaskDescription);
-  await page.getByLabel('User').selectOption({ value: userId });
+  await page.getByLabel('Assigned User *').selectOption({ value: userId });
   console.log(`Filled form with title: ${testTaskTitle}, description: ${testTaskDescription}, user: ${userId}`);
 
   // Step 6: Submit the form

@@ -46,21 +46,21 @@ test('user management flow', async ({ page }) => {
   const initialUserCount = await page.locator('a[href^="/users/"]').count();
   console.log(`Initial user count: ${initialUserCount}`);
 
-  // Step 3: Click the "Add User" button
-  await page.getByRole('link', { name: 'Add User' }).click();
-  console.log('Clicked Add User button');
+  // Step 3: Click the "New User" button
+  await page.getByRole('link', { name: 'New User' }).click();
+  console.log('Clicked New User button');
 
   // Verify we're on the Create User page
-  await expect(page.locator('h1')).toContainText('Create User');
+  await expect(page.locator('h1')).toContainText('Create New User');
 
   // Step 4: Fill out the user form
   const testUsername = `testuser_${Date.now()}`;
   const testEmail = `test_${Date.now()}@example.com`;
   const testPassword = 'password123';
 
-  await page.getByTestId('username-input').fill(testUsername);
-  await page.getByTestId('email-input').fill(testEmail);
-  await page.getByTestId('password-input').fill(testPassword);
+  await page.getByLabel('Username *').fill(testUsername);
+  await page.getByLabel('Email *').fill(testEmail);
+  await page.getByLabel('Password *').fill(testPassword);
   console.log(`Filled form with username: ${testUsername}, email: ${testEmail}`);
 
   // Step 5: Submit the form
@@ -72,7 +72,7 @@ test('user management flow', async ({ page }) => {
     { timeout: 10000 }
   );
 
-  await page.getByTestId('create-user-button').click();
+  await page.getByRole('button', { name: 'Create User' }).click();
   console.log('Clicked Create User button');
 
   try {

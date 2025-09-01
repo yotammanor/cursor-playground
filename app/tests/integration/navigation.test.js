@@ -1,9 +1,9 @@
 // @ts-check
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test('basic navigation test', async ({ page }) => {
   // Navigate to the home page
-  await page.goto('http://localhost:5173/');
+  await page.goto('http://localhost:5174/');
 
   // Verify the page title
   await expect(page).toHaveTitle('Task Management App');
@@ -23,7 +23,7 @@ test('basic navigation test', async ({ page }) => {
 
   // Go back to home page
   await page.getByRole('link', { name: 'Home' }).click();
-  await expect(page.url()).toBe('http://localhost:5173/');
+  await expect(page.url()).toBe('http://localhost:5174/');
 
   // Navigate to Users page via card button
   await page.getByRole('link', { name: 'Manage Users' }).click();

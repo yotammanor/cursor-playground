@@ -1,9 +1,9 @@
 // @ts-check
-const { test, expect } = require('@playwright/test');
+import { test, expect } from '@playwright/test';
 
 test('search functionality test', async ({ page }) => {
   // Navigate to the users page
-  await page.goto('http://localhost:5173/users');
+  await page.goto('http://localhost:5174/users');
 
   // Verify the search box exists
   const searchBox = page.getByPlaceholder('Search users...');
