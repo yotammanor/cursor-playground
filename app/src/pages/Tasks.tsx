@@ -17,7 +17,13 @@ const Tasks = () => {
   });
 
   if (isLoading) return <div className="flex justify-center p-8">Loading tasks...</div>;
-  if (error) return <div className="flex justify-center p-8 text-red-500">Error loading tasks</div>;
+  if (error)
+    return (
+      <div className="flex justify-center p-8 text-red-500">
+        <AlertCircle className="h-4 w-4 mr-2" />
+        Error loading tasks. Please try again later.
+      </div>
+    );
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -65,7 +71,7 @@ const Tasks = () => {
         <Link to="/tasks/new">
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            New Task
+            Add Task
           </Button>
         </Link>
       </div>
