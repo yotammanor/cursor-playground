@@ -41,7 +41,6 @@ def get_url():
         # Ensure the directory exists for relative paths
         db_path = url.replace("sqlite:///", "")
         if not db_path.startswith("/") and not db_path.startswith(":memory:"):
-            import os
             os.makedirs(os.path.dirname(db_path) if os.path.dirname(db_path) else ".", exist_ok=True)
     
     return url
