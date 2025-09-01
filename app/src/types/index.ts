@@ -1,31 +1,32 @@
 export interface User {
   id: number;
-  username: string;
+  name: string;
   email: string;
-  is_active: boolean;
+  phone?: string;
   created_at: string;
   updated_at: string;
 }
 
 export interface UserCreateInput {
-  username: string;
+  name: string;
   email: string;
-  password: string;
+  phone?: string;
 }
 
 export interface UserUpdateInput {
-  username?: string;
+  name?: string;
   email?: string;
-  password?: string;
-  is_active?: boolean;
+  phone?: string;
 }
 
 export interface Task {
   id: number;
   title: string;
   description?: string;
-  is_completed: boolean;
+  status: 'pending' | 'in_progress' | 'completed';
+  due_date?: string;
   user_id: number;
+  assignee_name?: string;
   created_at: string;
   updated_at: string;
 }
@@ -33,11 +34,15 @@ export interface Task {
 export interface TaskCreateInput {
   title: string;
   description?: string;
+  status?: 'pending' | 'in_progress' | 'completed';
+  due_date?: string;
   user_id: number;
 }
 
 export interface TaskUpdateInput {
   title?: string;
   description?: string;
-  is_completed?: boolean;
-} 
+  status?: 'pending' | 'in_progress' | 'completed';
+  due_date?: string;
+  user_id?: number;
+}

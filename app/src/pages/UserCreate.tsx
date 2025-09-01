@@ -1,173 +1,89 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useMutation, useQueryClient } from 'react-query'
-import { createUser } from '@/api'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { UserCreateInput } from '@/types'
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { createUser } from '../api';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { ArrowLeft, Save } from 'lucide-react';
 
 const UserCreate = () => {
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  
-  const [formData, setFormData] = useState<UserCreateInput>({
-    username: '',
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [formData, setFormData] = useState({
+    name: '',
     email: '',
-    password: ''
-  })
-  
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+    phone: '',
+  });
 
-  const createMutation = useMutation(
-    (data: UserCreateInput) => createUser(data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('users')
-        navigate('/users')
-      },
-      onError: (error: any) => {
-        if (error.response?.data?.detail) {
-          setFormErrors({ general: error.response.data.detail })
-        } else {
-          setFormErrors({ general: 'An error occurred while creating the user' })
-        }
-      }
-    }
-  )
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value
-    })
-    // Clear error when field is edited
-    if (formErrors[name]) {
-      setFormErrors({
-        ...formErrors,
-        [name]: ''
-      })
-    }
-  }
-
-  const validateForm = (): boolean => {
-    const errors: Record<string, string> = {}
-    
-    if (!formData.username.trim()) {
-      errors.username = 'Username is required'
-    }
-    
-    if (!formData.email.trim()) {
-      errors.email = 'Email is required'
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'Email is invalid'
-    }
-    
-    if (!formData.password.trim()) {
-      errors.password = 'Password is required'
-    } else if (formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters'
-    }
-    
-    setFormErrors(errors)
-    return Object.keys(errors).length === 0
-  }
+  const createMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      navigate('/users');
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (validateForm()) {
-      createMutation.mutate(formData)
-    }
-  }
+    e.preventDefault();
+    createMutation.mutate(formData);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Create User</h1>
+      <div className="flex items-center space-x-4">
         <Button variant="outline" onClick={() => navigate('/users')}>
-          Cancel
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Users
         </Button>
+        <h1 className="text-3xl font-bold">Create New User</h1>
       </div>
 
       <Card>
-        <form onSubmit={handleSubmit}>
-          <CardHeader>
-            <CardTitle>User Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {formErrors.general && (
-              <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
-                {formErrors.general}
-              </div>
-            )}
-            
-            <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium">
-                Username
-              </label>
-              <Input
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                className={formErrors.username ? 'border-destructive' : ''}
-                data-testid="username-input"
-              />
-              {formErrors.username && (
-                <p className="text-xs text-destructive">{formErrors.username}</p>
-              )}
+        <CardHeader>
+          <CardTitle>User Information</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="name">Name *</Label>
+              <Input id="name" name="name" type="text" value={formData.name} onChange={handleInputChange} required />
             </div>
-            
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
+            <div>
+              <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={formErrors.email ? 'border-destructive' : ''}
-                data-testid="email-input"
+                required
               />
-              {formErrors.email && (
-                <p className="text-xs text-destructive">{formErrors.email}</p>
-              )}
             </div>
-            
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className={formErrors.password ? 'border-destructive' : ''}
-                data-testid="password-input"
-              />
-              {formErrors.password && (
-                <p className="text-xs text-destructive">{formErrors.password}</p>
-              )}
+            <div>
+              <Label htmlFor="phone">Phone</Label>
+              <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} />
             </div>
-          </CardContent>
-          <CardFooter>
-            <Button 
-              type="submit" 
-              disabled={createMutation.isLoading}
-              data-testid="create-user-button"
-            >
-              {createMutation.isLoading ? 'Creating...' : 'Create User'}
-            </Button>
-          </CardFooter>
-        </form>
+            <div className="flex space-x-2">
+              <Button type="submit" disabled={createMutation.isPending}>
+                <Save className="w-4 h-4 mr-2" />
+                {createMutation.isPending ? 'Creating...' : 'Create User'}
+              </Button>
+              <Button type="button" variant="outline" onClick={() => navigate('/users')}>
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default UserCreate 
+export default UserCreate;

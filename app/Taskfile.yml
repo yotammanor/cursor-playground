@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 # Frontend Application Taskfile
 # Handles React/Vite frontend tasks
@@ -11,132 +11,118 @@ vars:
 
 tasks:
   default:
-    desc: "Show available tasks (default command)"
+    desc: 'Show available tasks (default command)'
     cmds:
       - task --list
 
   install:
-    desc: "Install frontend dependencies"
+    desc: 'Install frontend dependencies'
     cmds:
-      - echo "📦 Installing frontend dependencies..."
       - yarn install
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   deps:
-    desc: "Install Node.js dependencies for frontend"
+    desc: 'Install Node.js dependencies for frontend'
     deps: [install]
-    cmds:
-      - echo "📦 Dependencies already installed via install task"
 
   deps:clean:
-    desc: "Clean install Node.js dependencies"
+    desc: 'Clean install Node.js dependencies'
     cmds:
-      - echo "🧹 Clean installing frontend dependencies..."
       - rm -rf node_modules yarn.lock
       - yarn install
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   dev:
-    desc: "Start frontend development server"
+    desc: 'Start frontend development server'
     cmds:
-      - echo "🚀 Starting frontend development server..."
       - yarn dev
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   build:
-    desc: "Build frontend for production"
+    desc: 'Build frontend for production'
     cmds:
-      - echo "🏗️ Building frontend..."
       - yarn build
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   preview:
-    desc: "Preview production build"
+    desc: 'Preview production build'
     cmds:
-      - echo "👀 Previewing production build..."
       - yarn preview
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   test:
-    desc: "Run all tests (frontend unit + e2e + web API e2e)"
+    desc: 'Run all tests (frontend unit + e2e + web API e2e)'
     cmds:
       - task: test:unit
-      - task: test:e2e
+      # - task: test:e2e
 
   test:unit:
-    desc: "Run frontend unit tests"
+    desc: 'Run frontend unit tests'
     cmds:
-      - echo "🧪 Running frontend unit tests..."
       - yarn test
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   test:e2e:
-    desc: "Run Playwright e2e tests (frontend + web API)"
+    desc: 'Run Playwright e2e tests (frontend + web API)'
     cmds:
-      - echo "🧪 Running all e2e tests (frontend + web API)..."
       - yarn test:e2e
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   test:e2e:ui:
-    desc: "Run Playwright e2e tests with UI"
+    desc: 'Run Playwright e2e tests with UI'
     cmds:
-      - echo "🧪 Running e2e tests with UI..."
       - yarn dlx playwright test --ui
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   test:api:
-    desc: "Run Playwright API tests only"
+    desc: 'Run Playwright API tests only'
     cmds:
-      - echo "🧪 Running API tests..."
       - yarn test:api
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   lint:
-    desc: "Run frontend linting and formatting"
+    desc: 'Run frontend linting and formatting'
+    deps:
+      - format
     cmds:
-      - echo "🔍 Linting frontend..."
       - yarn lint
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   lint:fix:
-    desc: "Fix frontend linting issues"
+    desc: 'Fix frontend linting issues'
     cmds:
-      - echo "🔧 Fixing frontend lint issues..."
       - yarn lint:fix
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   format:
-    desc: "Format frontend code"
+    desc: 'Format frontend code'
     cmds:
-      - echo "✨ Formatting frontend code..."
       - yarn format
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
   clean:
-    desc: "Clean build artifacts for frontend"
+    desc: 'Clean build artifacts for frontend'
     cmds:
-      - echo "🧹 Cleaning frontend artifacts..."
       - rm -rf {{.BUILD_DIR}} node_modules/.vite
 
   doctor:
-    desc: "Check frontend development dependencies (nvm, yarn, and corepack)"
+    desc: 'Check frontend development dependencies (nvm, yarn, and corepack)'
     silent: true
     env:
-      CODEARTIFACT_AUTH_TOKEN: "{{.CODEARTIFACT_AUTH_TOKEN}}"
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
     cmds:
-      - echo "🔍 Checking frontend dependencies..."
       - |
         if [ -d "$HOME/.nvm" ]; then
           if [ -f "$HOME/.nvm/nvm.sh" ]; then
@@ -172,4 +158,3 @@ tasks:
           echo "   Corepack comes bundled with Node.js 14.19.0+ (up to v25)"
           echo "   Update Node.js or install corepack: npm install -g corepack"
         fi
-

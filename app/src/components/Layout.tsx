@@ -1,5 +1,5 @@
-import { Outlet, Link } from 'react-router-dom'
-import { Button } from './ui/button'
+import { Outlet, Link } from 'react-router-dom';
+import { Button } from './ui/button';
 
 const Layout = () => {
   return (
@@ -29,7 +29,7 @@ const Layout = () => {
         </div>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Layout 
+export default Layout;

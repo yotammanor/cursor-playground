@@ -2,13 +2,11 @@
 
 import logging
 import time
-from typing import Dict, Any
 
 from celery import Celery
+from common.database import init_db
 import requests
 
-from common.database import init_db, get_db
-from common.models import Task
 from worker.tasks import process_task, send_notification
 
 # Configure logging
@@ -47,11 +45,11 @@ def poll_for_tasks():
 def main():
     """Main entry point."""
     logger.info("Starting worker service...")
-    
+
     # Initialize database
     init_db()
     logger.info("Database initialized")
-    
+
     # Main loop
     try:
         while True:
@@ -62,4 +60,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

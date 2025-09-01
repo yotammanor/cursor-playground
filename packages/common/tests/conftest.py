@@ -11,17 +11,17 @@ from common.models import Base
 def test_db():
     """Create a test database with in-memory SQLite."""
     engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    
+    testing_session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
     # Create all tables
     Base.metadata.create_all(bind=engine)
-    
+
     # Enable foreign key constraints for SQLite
     with engine.connect() as conn:
         conn.execute("PRAGMA foreign_keys = ON")
-    
+
     # Create a session
-    db = TestingSessionLocal()
+    db = testing_session_local()
     try:
         yield db
     finally:
@@ -32,18 +32,10 @@ def test_db():
 @pytest.fixture
 def sample_user_data():
     """Sample user data for testing."""
-    return {
-        "username": "testuser",
-        "email": "test@example.com",
-        "password": "testpassword123"
-    }
+    return {"username": "testuser", "email": "test@example.com", "password": "testpassword123"}
 
 
 @pytest.fixture
 def sample_task_data():
     """Sample task data for testing."""
-    return {
-        "title": "Test Task",
-        "description": "This is a test task",
-        "user_id": 1
-    }
+    return {"title": "Test Task", "description": "This is a test task", "user_id": 1}

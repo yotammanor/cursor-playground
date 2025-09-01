@@ -8,7 +8,7 @@ Our project has the following key components:
 
 1. **Common Package** (`services/common/`): A shared library package that provides common functionality used by both backend services. It's not a standalone service but is installed as a dependency.
 
-2. **Web API Service** (`services/web-api/`): A FastAPI application that provides REST endpoints for the frontend.
+2. **API Service** (`services/api/`): A FastAPI application that provides REST endpoints for the frontend.
 
 3. **Worker Service** (`services/worker/`): A Celery worker that processes background tasks.
 
@@ -91,7 +91,7 @@ We'll create Taskfiles at multiple levels:
 version: '3'
 
 includes:
-  web-api: ./services/web-api/Taskfile.yml
+  api: ./services/api/Taskfile.yml
   worker: ./services/worker/Taskfile.yml
   app: ./app/Taskfile.yml
 
@@ -100,7 +100,7 @@ tasks:
     desc: Set up the entire development environment
     cmds:
       - task: setup-common
-      - task: web-api:setup
+      - task: api:setup
       - task: worker:setup
       - task: app:setup
 
@@ -115,26 +115,26 @@ tasks:
   dev:
     desc: Start all services for development
     cmds:
-      - task: web-api:dev
+      - task: api:dev
       - task: worker:dev
       - task: app:dev
 
   test:
     desc: Run all tests
     cmds:
-      - task: web-api:test
+      - task: api:test
       - task: worker:test
       - task: app:test
 
   lint:
     desc: Lint all code
     cmds:
-      - task: web-api:lint
+      - task: api:lint
       - task: worker:lint
       - task: app:lint
 ```
 
-**Service Taskfile.yml example (web-api):**
+**Service Taskfile.yml example (api):**
 ```yaml
 version: '3'
 
@@ -143,7 +143,7 @@ vars:
 
 tasks:
   setup:
-    desc: Set up the web-api development environment
+    desc: Set up the api development environment
     cmds:
       - uv python install {{.PYTHON_VERSION}}
       - uv venv
@@ -151,17 +151,17 @@ tasks:
       - uv pip install -e ../../common  # Install common package in editable mode
 
   dev:
-    desc: Start the web-api service
+    desc: Start the api service
     cmds:
       - uv run uvicorn app.main:app --reload --port 8000
 
   test:
-    desc: Run web-api tests
+    desc: Run api tests
     cmds:
       - uv run pytest tests/
 
   lint:
-    desc: Lint web-api code
+    desc: Lint api code
     cmds:
       - uv run ruff check .
       - uv run ruff format --check .

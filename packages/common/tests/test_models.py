@@ -1,9 +1,8 @@
 """Tests for SQLAlchemy models."""
 
-import pytest
 from datetime import datetime
 
-from common.models import User, Task
+from common.models import Task, User
 
 
 class TestUser:
@@ -11,11 +10,7 @@ class TestUser:
 
     def test_user_creation(self, test_db):
         """Test creating a user."""
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            hashed_password="hashed_password_123"
-        )
+        user = User(username="testuser", email="test@example.com", hashed_password="hashed_password_123")
         test_db.add(user)
         test_db.commit()
         test_db.refresh(user)
@@ -30,11 +25,7 @@ class TestUser:
 
     def test_user_default_values(self, test_db):
         """Test user default values."""
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            hashed_password="hashed_password_123"
-        )
+        user = User(username="testuser", email="test@example.com", hashed_password="hashed_password_123")
         test_db.add(user)
         test_db.commit()
         test_db.refresh(user)
@@ -45,11 +36,7 @@ class TestUser:
 
     def test_user_string_representation(self, test_db):
         """Test user string representation."""
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            hashed_password="hashed_password_123"
-        )
+        user = User(username="testuser", email="test@example.com", hashed_password="hashed_password_123")
         test_db.add(user)
         test_db.commit()
         test_db.refresh(user)
@@ -66,22 +53,13 @@ class TestTask:
     def test_task_creation(self, test_db):
         """Test creating a task."""
         # First create a user
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            hashed_password="hashed_password_123"
-        )
+        user = User(username="testuser", email="test@example.com", hashed_password="hashed_password_123")
         test_db.add(user)
         test_db.commit()
         test_db.refresh(user)
-        
+
         # Then create a task for that user
-        task = Task(
-            title="Test Task",
-            description="This is a test task",
-            user_id=user.id,
-            is_completed=False
-        )
+        task = Task(title="Test Task", description="This is a test task", user_id=user.id, is_completed=False)
         test_db.add(task)
         test_db.commit()
         test_db.refresh(task)
@@ -97,19 +75,12 @@ class TestTask:
     def test_task_default_values(self, test_db):
         """Test task default values."""
         # First create a user
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            hashed_password="hashed_password_123"
-        )
+        user = User(username="testuser", email="test@example.com", hashed_password="hashed_password_123")
         test_db.add(user)
         test_db.commit()
         test_db.refresh(user)
-        
-        task = Task(
-            title="Test Task",
-            user_id=user.id
-        )
+
+        task = Task(title="Test Task", user_id=user.id)
         test_db.add(task)
         test_db.commit()
         test_db.refresh(task)
@@ -121,19 +92,12 @@ class TestTask:
     def test_task_without_description(self, test_db):
         """Test creating a task without description."""
         # First create a user
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            hashed_password="hashed_password_123"
-        )
+        user = User(username="testuser", email="test@example.com", hashed_password="hashed_password_123")
         test_db.add(user)
         test_db.commit()
         test_db.refresh(user)
-        
-        task = Task(
-            title="Test Task",
-            user_id=user.id
-        )
+
+        task = Task(title="Test Task", user_id=user.id)
         test_db.add(task)
         test_db.commit()
         test_db.refresh(task)
@@ -144,20 +108,12 @@ class TestTask:
     def test_task_string_representation(self, test_db):
         """Test task string representation."""
         # First create a user
-        user = User(
-            username="testuser",
-            email="test@example.com",
-            hashed_password="hashed_password_123"
-        )
+        user = User(username="testuser", email="test@example.com", hashed_password="hashed_password_123")
         test_db.add(user)
         test_db.commit()
         test_db.refresh(user)
-        
-        task = Task(
-            title="Test Task",
-            description="This is a test task",
-            user_id=user.id
-        )
+
+        task = Task(title="Test Task", description="This is a test task", user_id=user.id)
         test_db.add(task)
         test_db.commit()
         test_db.refresh(task)

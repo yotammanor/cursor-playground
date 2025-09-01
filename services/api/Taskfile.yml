@@ -1,0 +1,105 @@
+version: "3"
+
+# Web API Service Taskfile
+# Handles FastAPI web service tasks
+
+vars:
+  SERVICE_NAME: api
+  TESTS_DIR: tests
+  PORT: "{{.PORT | default 8000}}"
+
+tasks:
+  default:
+    desc: "Show available tasks (default command)"
+    cmds:
+      - task --list
+
+
+
+  deps:
+    desc: "Install dependencies for api service (production only)"
+    cmds:
+      - uv sync
+
+  deps:dev:
+    desc: "Install development dependencies for api service"
+    cmds:
+      - uv sync --all-groups
+
+  sync:
+    desc: "Sync exact dependencies from lock files"
+    cmds:
+      - uv sync --frozen
+
+  db:setup:
+    desc: "Setup PostgreSQL database"
+    cmds:
+      - echo "Make sure PostgreSQL is running and create database:"
+      - echo "createdb task_management"
+      - echo "Or set DATABASE_URL environment variable"
+
+  db:migrate:
+    desc: "Run database migrations"
+    cmds:
+      - uv run alembic upgrade head
+
+  db:create-migration:
+    desc: "Create a new database migration"
+    cmds:
+      - echo "Usage - task db:create-migration -- message"
+      - uv run alembic revision --autogenerate -m "auto migration"
+
+  test:
+    desc: "Run tests for api service"
+    cmds:
+      - task: deps:dev
+      - uv run python -m pytest {{.TESTS_DIR}}/ -v
+
+  test:unit:
+    desc: "Run unit tests for api service"
+    cmds:
+      - task: test
+
+  lint:
+    desc: "Run linting and formatting for api service"
+    deps: [format]
+    cmds:
+      - task: deps:dev
+      - uv run ruff check src {{.TESTS_DIR}} --fix
+      - uv run ruff format src {{.TESTS_DIR}}
+
+  lint:check:
+    desc: "Check linting without fixing"
+    cmds:
+      - task: deps:dev
+      - uv run ruff check src {{.TESTS_DIR}} --diff
+      - uv run ruff format src {{.TESTS_DIR}} --diff
+
+  format:
+    desc: "Format code only"
+    cmds:
+      - task: deps:dev
+      - uv run ruff format src {{.TESTS_DIR}}
+
+  run:
+    desc: "Run the api service"
+    aliases: [run:dev, dev]
+    cmds:
+      - uv run .venv/bin/python -m uvicorn src.main:app --reload --host 0.0.0.0 --port {{.PORT}}
+
+  run:prod:
+    desc: "Run the api service in production mode"
+    cmds:
+      - uv run .venv/bin/python -m uvicorn src.main:app --host 0.0.0.0 --port {{.PORT}}
+
+  build:
+    desc: "Build api service package (production dependencies only)"
+    cmds:
+      - uv build # todo - this will need to change.
+
+  clean:
+    desc: "Clean build artifacts for api"
+    cmds:
+      - rm -rf dist/ build/ .pytest_cache/
+      - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+

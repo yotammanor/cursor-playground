@@ -3,6 +3,20 @@ revision = 3
 requires-python = "==3.10.*"
 
 [[package]]
+name = "alembic"
+version = "1.14.1"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+dependencies = [
+    { name = "mako" },
+    { name = "sqlalchemy" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/alembic/1.14.1/alembic-1.14.1.tar.gz", hash = "sha256:496e888245a53adf1498fcab31713a469c65836f8de76e01399aa1c3e90dd213" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/alembic/1.14.1/alembic-1.14.1-py3-none-any.whl", hash = "sha256:1acdd7a3a478e208b0503cd73614d5e4c6efafa4e73518bb60e4f2846a37b1c5" },
+]
+
+[[package]]
 name = "amqp"
 version = "5.3.1"
 source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
@@ -155,6 +169,7 @@ version = "0.1.0"
 source = { editable = "../../packages/common" }
 dependencies = [
     { name = "email-validator" },
+    { name = "psycopg2" },
     { name = "pydantic" },
     { name = "sqlalchemy" },
 ]
@@ -162,7 +177,8 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "email-validator", specifier = ">=2.0.0" },
-    { name = "pydantic", specifier = ">=2.9.0" },
+    { name = "psycopg2", specifier = ">=2.9.0,<3.0.0" },
+    { name = "pydantic", specifier = ">=2.11.0,<2.12.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.10.0" },
@@ -170,6 +186,30 @@ requires-dist = [
     { name = "sqlalchemy", specifier = ">=1.3.0,<1.4.0" },
 ]
 provides-extras = ["dev"]
+
+[[package]]
+name = "coverage"
+version = "7.10.6"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6.tar.gz", hash = "sha256:f644a3ae5933a552a29dbb9aa2f90c677a875f80ebea028e5a52a4f429044b90" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:70e7bfbd57126b5554aa482691145f798d7df77489a177a6bef80de78860a356" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e41be6f0f19da64af13403e52f2dec38bbc2937af54df8ecef10850ff8d35301" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:c61fc91ab80b23f5fddbee342d19662f3d3328173229caded831aa0bd7595460" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:10356fdd33a7cc06e8051413140bbdc6f972137508a3572e3f59f805cd2832fd" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:80b1695cf7c5ebe7b44bf2521221b9bb8cdf69b1f24231149a7e3eb1ae5fa2fb" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:2e4c33e6378b9d52d3454bd08847a8651f4ed23ddbb4a0520227bd346382bbc6" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:c8a3ec16e34ef980a46f60dc6ad86ec60f763c3f2fa0db6d261e6e754f72e945" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:7d79dabc0a56f5af990cc6da9ad1e40766e82773c075f09cc571e2076fef882e" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-win32.whl", hash = "sha256:86b9b59f2b16e981906e9d6383eb6446d5b46c278460ae2c36487667717eccf1" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-cp310-cp310-win_amd64.whl", hash = "sha256:e132b9152749bd33534e5bd8565c7576f135f157b4029b975e15ee184325f528" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/coverage/7.10.6/coverage-7.10.6-py3-none-any.whl", hash = "sha256:92c4ecf6bf11b2e85fd4d8204814dc26e6a19f0c9d938c207c5cb0eadfcabbe3" },
+]
+
+[package.optional-dependencies]
+toml = [
+    { name = "tomli" },
+]
 
 [[package]]
 name = "dnspython"
@@ -194,12 +234,33 @@ wheels = [
 ]
 
 [[package]]
+name = "exceptiongroup"
+version = "1.3.0"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/exceptiongroup/1.3.0/exceptiongroup-1.3.0.tar.gz", hash = "sha256:b241f5885f560bc56a59ee63ca4c6a8bfa46ae4ad651af316d4e81817bb9fd88" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/exceptiongroup/1.3.0/exceptiongroup-1.3.0-py3-none-any.whl", hash = "sha256:4d111e6e0c13d0644cad6ddaa7ed0261a0b36971f6d23e7ec9b4b9097da78a10" },
+]
+
+[[package]]
 name = "idna"
 version = "3.10"
 source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
 sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/idna/3.10/idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9" }
 wheels = [
     { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/idna/3.10/idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3" },
+]
+
+[[package]]
+name = "iniconfig"
+version = "2.1.0"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/iniconfig/2.1.0/iniconfig-2.1.0.tar.gz", hash = "sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/iniconfig/2.1.0/iniconfig-2.1.0-py3-none-any.whl", hash = "sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760" },
 ]
 
 [[package]]
@@ -218,12 +279,51 @@ wheels = [
 ]
 
 [[package]]
+name = "mako"
+version = "1.3.10"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+dependencies = [
+    { name = "markupsafe" },
+]
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/mako/1.3.10/mako-1.3.10.tar.gz", hash = "sha256:99579a6f39583fa7e5630a28c3c1f440e4e97a414b80372649c0ce338da2ea28" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/mako/1.3.10/mako-1.3.10-py3-none-any.whl", hash = "sha256:baef24a52fc4fc514a0887ac600f9f1cff3d82c61d4d700a1fa84d597b88db59" },
+]
+
+[[package]]
+name = "markupsafe"
+version = "3.0.2"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/markupsafe-3.0.2.tar.gz", hash = "sha256:ee55d3edf80167e48ea11a923c7386f4669df67d7994554387f84e7d8b0a2bf0" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:7e94c425039cde14257288fd61dcfb01963e658efbc0ff54f5306b06054700f8" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9e2d922824181480953426608b81967de705c3cef4d1af983af849d7bd619158" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:38a9ef736c01fccdd6600705b09dc574584b89bea478200c5fbf112a6b0d5579" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bbcb445fa71794da8f178f0f6d66789a28d7319071af7a496d4d507ed566270d" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:57cb5a3cf367aeb1d316576250f65edec5bb3be939e9247ae594b4bcbc317dfb" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:3809ede931876f5b2ec92eef964286840ed3540dadf803dd570c3b7e13141a3b" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:e07c3764494e3776c602c1e78e298937c3315ccc9043ead7e685b7f2b8d47b3c" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:b424c77b206d63d500bcb69fa55ed8d0e6a3774056bdc4839fc9298a7edca171" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-win32.whl", hash = "sha256:fcabf5ff6eea076f859677f5f0b6b5c1a51e70a376b0579e0eadef8db48c6b50" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/markupsafe/3.0.2/MarkupSafe-3.0.2-cp310-cp310-win_amd64.whl", hash = "sha256:6af100e168aa82a50e186c82875a5893c5597a0c1ccdb0d8b40240b1f28b969a" },
+]
+
+[[package]]
 name = "packaging"
 version = "25.0"
 source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
 sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/packaging/25.0/packaging-25.0.tar.gz", hash = "sha256:d443872c98d677bf60f6a1f2f8c1cb748e8fe762d2bf9d3148b5599295b0fc4f" }
 wheels = [
     { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/packaging/25.0/packaging-25.0-py3-none-any.whl", hash = "sha256:29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484" },
+]
+
+[[package]]
+name = "pluggy"
+version = "1.6.0"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pluggy/1.6.0/pluggy-1.6.0.tar.gz", hash = "sha256:7dcc130b76258d33b90f61b658791dede3486c3e6bfb003ee5c9bfb396dd22f3" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pluggy/1.6.0/pluggy-1.6.0-py3-none-any.whl", hash = "sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746" },
 ]
 
 [[package]]
@@ -236,6 +336,16 @@ dependencies = [
 sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/prompt-toolkit/3.0.51/prompt_toolkit-3.0.51.tar.gz", hash = "sha256:931a162e3b27fc90c86f1b48bb1fb2c528c2761475e57c9c06de13311c7b54ed" }
 wheels = [
     { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/prompt-toolkit/3.0.51/prompt_toolkit-3.0.51-py3-none-any.whl", hash = "sha256:52742911fde84e2d423e2f9a4cf1de7d7ac4e51958f648d9540e0fb8db077b07" },
+]
+
+[[package]]
+name = "psycopg2"
+version = "2.9.10"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/psycopg2/2.9.10/psycopg2-2.9.10.tar.gz", hash = "sha256:12ec0b40b0273f95296233e8750441339298e6a572f7039da5b260e3c8b60e11" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/psycopg2/2.9.10/psycopg2-2.9.10-cp310-cp310-win32.whl", hash = "sha256:5df2b672140f95adb453af93a7d669d7a7bf0a56bcd26f1502329166f4a61716" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/psycopg2/2.9.10/psycopg2-2.9.10-cp310-cp310-win_amd64.whl", hash = "sha256:c6f7b8561225f9e711a9c47087388a97fdc948211c10a4bccbf0ba68ab7b3b5a" },
 ]
 
 [[package]]
@@ -292,6 +402,59 @@ wheels = [
 ]
 
 [[package]]
+name = "pygments"
+version = "2.19.2"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pygments/2.19.2/pygments-2.19.2.tar.gz", hash = "sha256:636cb2477cec7f8952536970bc533bc43743542f70392ae026374600add5b887" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pygments/2.19.2/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b" },
+]
+
+[[package]]
+name = "pytest"
+version = "8.4.1"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "exceptiongroup" },
+    { name = "iniconfig" },
+    { name = "packaging" },
+    { name = "pluggy" },
+    { name = "pygments" },
+    { name = "tomli" },
+]
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pytest/8.4.1/pytest-8.4.1.tar.gz", hash = "sha256:7c67fd69174877359ed9371ec3af8a3d2b04741818c51e5e99cc1742251fa93c" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pytest/8.4.1/pytest-8.4.1-py3-none-any.whl", hash = "sha256:539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7" },
+]
+
+[[package]]
+name = "pytest-cov"
+version = "6.2.1"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+dependencies = [
+    { name = "coverage", extra = ["toml"] },
+    { name = "pluggy" },
+    { name = "pytest" },
+]
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pytest-cov/6.2.1/pytest_cov-6.2.1.tar.gz", hash = "sha256:25cc6cc0a5358204b8108ecedc51a9b57b34cc6b8c967cc2c01a4e00d8a67da2" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pytest-cov/6.2.1/pytest_cov-6.2.1-py3-none-any.whl", hash = "sha256:f5bc4c23f42f1cdd23c70b1dab1bbaef4fc505ba950d53e0081d0730dd7e86d5" },
+]
+
+[[package]]
+name = "pytest-mock"
+version = "3.14.1"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pytest-mock/3.14.1/pytest_mock-3.14.1.tar.gz", hash = "sha256:159e9edac4c451ce77a5cdb9fc5d1100708d2dd4ba3c3df572f14097351af80e" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pytest-mock/3.14.1/pytest_mock-3.14.1-py3-none-any.whl", hash = "sha256:178aefcd11307d874b4cd3100344e7e2d888d9791a6a1d9bfe90fbc1b74fd1d0" },
+]
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
@@ -301,6 +464,23 @@ dependencies = [
 sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/python-dateutil/2.9.0.post0/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3" }
 wheels = [
     { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/python-dateutil/2.9.0.post0/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427" },
+]
+
+[[package]]
+name = "pyyaml"
+version = "6.0.2"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/pyyaml-6.0.2.tar.gz", hash = "sha256:d584d9ec91ad65861cc08d42e834324ef890a082e591037abe114850ff7bbc3e" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:0a9a2848a5b7feac301353437eb7d5957887edbf81d56e903999a75a3d743086" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:29717114e51c84ddfba879543fb232a6ed60086602313ca38cce623c1d62cfbf" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8824b5a04a04a047e72eea5cec3bc266db09e35de6bdfe34c9436ac5ee27d237" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:7c36280e6fb8385e520936c3cb3b8042851904eba0e58d277dca80a5cfed590b" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ec031d5d2feb36d1d1a24380e4db6d43695f3748343d99434e6f5f9156aaa2ed" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:936d68689298c36b53b29f23c6dbb74de12b4ac12ca6cfe0e047bedceea56180" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:23502f431948090f597378482b4812b0caae32c22213aecf3b55325e049a6c68" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-win32.whl", hash = "sha256:2e99c6826ffa974fe6e27cdb5ed0021786b03fc98e5ee3c5bfe1fd5015f42b99" },
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/pyyaml/6.0.2/PyYAML-6.0.2-cp310-cp310-win_amd64.whl", hash = "sha256:a4d3091415f010369ae4ed1fc6b79def9416358877534caf6a0fdd2146c87a3e" },
 ]
 
 [[package]]
@@ -328,6 +508,20 @@ dependencies = [
 sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/requests/2.32.4/requests-2.32.4.tar.gz", hash = "sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422" }
 wheels = [
     { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/requests/2.32.4/requests-2.32.4-py3-none-any.whl", hash = "sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c" },
+]
+
+[[package]]
+name = "responses"
+version = "0.25.8"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+dependencies = [
+    { name = "pyyaml" },
+    { name = "requests" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/responses/0.25.8/responses-0.25.8.tar.gz", hash = "sha256:9374d047a575c8f781b94454db5cab590b6029505f488d12899ddb10a4af1cf4" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/responses/0.25.8/responses-0.25.8-py3-none-any.whl", hash = "sha256:0c710af92def29c8352ceadff0c3fe340ace27cf5af1bbe46fb71275bcd2831c" },
 ]
 
 [[package]]
@@ -370,6 +564,15 @@ name = "sqlalchemy"
 version = "1.3.24"
 source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
 sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/sqlalchemy/1.3.24/SQLAlchemy-1.3.24.tar.gz", hash = "sha256:ebbb777cbf9312359b897bf81ba00dae0f5cb69fba2a18265dcc18a6f5ef7519" }
+
+[[package]]
+name = "tomli"
+version = "2.2.1"
+source = { registry = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/" }
+sdist = { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/tomli/2.2.1/tomli-2.2.1.tar.gz", hash = "sha256:cd45e1dc79c835ce60f7404ec8119f2eb06d38b1deba146f07ced3bbc44505ff" }
+wheels = [
+    { url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.com/pypi/Pagaya-Artifacts-prod/simple/tomli/2.2.1/tomli-2.2.1-py3-none-any.whl", hash = "sha256:cb55c73c5f4408779d0cf3eef9f762b9c9f147a77de7b258bef0a5628adc85cc" },
+]
 
 [[package]]
 name = "typing-extensions"
@@ -435,6 +638,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "celery" },
     { name = "common" },
+    { name = "psycopg2" },
     { name = "pydantic", extra = ["email"] },
     { name = "redis" },
     { name = "requests" },
@@ -443,16 +647,27 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
+    { name = "alembic" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "pytest-mock" },
+    { name = "responses" },
     { name = "ruff" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "alembic", marker = "extra == 'dev'", specifier = ">=1.13.0" },
     { name = "celery", specifier = ">=5.3.0" },
     { name = "common", editable = "../../packages/common" },
-    { name = "pydantic", extras = ["email"], specifier = ">=2.9.0" },
+    { name = "psycopg2", specifier = ">=2.9.0,<3.0.0" },
+    { name = "pydantic", extras = ["email"], specifier = ">=2.11.0,<2.12.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
+    { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.10.0" },
     { name = "redis", specifier = ">=5.0.0" },
     { name = "requests", specifier = ">=2.31.0" },
+    { name = "responses", marker = "extra == 'dev'", specifier = ">=0.24.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.5.0" },
     { name = "sqlalchemy", specifier = ">=1.3.0,<1.4.0" },
 ]

@@ -1,12 +1,12 @@
-import { Routes, Route } from 'react-router-dom'
-import Layout from './components/Layout'
-import Home from './pages/Home'
-import Users from './pages/Users'
-import Tasks from './pages/Tasks'
-import UserDetail from './pages/UserDetail'
-import UserCreate from './pages/UserCreate'
-import TaskDetail from './pages/TaskDetail'
-import NotFound from './pages/NotFound'
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Users from './pages/Users';
+import Tasks from './pages/Tasks';
+import UserDetail from './pages/UserDetail';
+import UserCreate from './pages/UserCreate';
+import TaskDetail from './pages/TaskDetail';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
         </Route>
       </Routes>
     </div>
-  )
+  );
 }
 
-export default App 
+export default App;

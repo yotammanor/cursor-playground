@@ -1,0 +1,10 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+- Never edit a taskfile without being explictly asksed to edit it.
+- If unsure, ask for permission first
+- You may run in parallel.
+- If things to don't work, try `task doctor`

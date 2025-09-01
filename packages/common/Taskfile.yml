@@ -5,7 +5,7 @@ version: "3"
 
 vars:
   SERVICE_NAME: common
-  PYTHON_SRC: common
+  PYTHON_SRC: src/common
   TESTS_DIR: tests
 
 tasks:
@@ -15,33 +15,28 @@ tasks:
       - task --list
 
   deps:
-    desc: "Install dependencies for common package"
+    desc: "Install dependencies for common package (production only)"
     cmds:
-      - echo "📦 Installing dependencies for {{.SERVICE_NAME}}..."
       - uv sync
 
   deps:dev:
     desc: "Install development dependencies for common package"
     cmds:
-      - echo "🔧 Installing development dependencies for {{.SERVICE_NAME}}..."
       - uv sync --extra dev
 
   sync:
     desc: "Sync exact dependencies from lock files"
     cmds:
-      - echo "🔒 Syncing dependencies for {{.SERVICE_NAME}}..."
       - uv sync --frozen
 
   sync:dev:
     desc: "Sync exact development dependencies from lock files"
     cmds:
-      - echo "🔒 Syncing development dependencies for {{.SERVICE_NAME}}..."
       - uv sync --frozen --extra dev
 
   test:
     desc: "Run tests for common package"
     cmds:
-      - echo "🧪 Testing {{.SERVICE_NAME}}..."
       - uv sync --extra dev
       - uv run pytest {{.TESTS_DIR}}/ -v
     status:
@@ -55,7 +50,6 @@ tasks:
   lint:
     desc: "Run linting and formatting for common package"
     cmds:
-      - echo "🔍 Linting {{.SERVICE_NAME}}..."
       - uv sync --extra dev
       - uv run ruff check {{.PYTHON_SRC}} --fix
       - uv run ruff format {{.PYTHON_SRC}}
@@ -63,7 +57,6 @@ tasks:
   lint:check:
     desc: "Check linting without fixing"
     cmds:
-      - echo "🔍 Checking lint for {{.SERVICE_NAME}}..."
       - uv sync --extra dev
       - uv run ruff check {{.PYTHON_SRC}} --diff
       - uv run ruff format {{.PYTHON_SRC}} --diff
@@ -71,34 +64,29 @@ tasks:
   format:
     desc: "Format code only"
     cmds:
-      - echo "🎨 Formatting {{.SERVICE_NAME}}..."
       - uv sync --extra dev
       - uv run ruff format {{.PYTHON_SRC}}
 
   build:
-    desc: "Build common package"
+    desc: "Build common package (production dependencies only)"
     cmds:
-      - echo "🏗️ Building {{.SERVICE_NAME}} package..."
       - uv build
 
   clean:
     desc: "Clean build artifacts for common"
     cmds:
-      - echo "🧹 Cleaning {{.SERVICE_NAME}} artifacts..."
       - rm -rf dist/ build/ .pytest_cache/
       - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
   dev:install:
     desc: "Install common package in development mode"
     cmds:
-      - echo "🔧 Installing {{.SERVICE_NAME}} in development mode..."
       - uv sync
 
   doctor:
     desc: "Check Python development dependencies (uv)"
     silent: true
     cmds:
-      - echo "🔍 Checking Python dependencies..."
       - |
         if command -v uv >/dev/null 2>&1; then
           UV_VERSION=$(uv --version)

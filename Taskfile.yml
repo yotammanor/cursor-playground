@@ -5,9 +5,9 @@ version: "3"
 # using composition of individual service Taskfiles
 
 includes:
-  web-api:
-    taskfile: ./services/web-api/Taskfile.yml
-    dir: ./services/web-api
+  api:
+    taskfile: ./services/api/Taskfile.yml
+    dir: ./services/api
     internal: true
   worker:
     taskfile: ./services/worker/Taskfile.yml
@@ -26,21 +26,16 @@ includes:
 tasks:
   # === Setup Tasks ===
   setup:
-    desc: "Set up the entire development environment"
+    desc: "Set up the entire development environment (includes dev dependencies)"
+    aliases: [install]
     cmds:
-      - task: python:deps
+      - task: python:deps:dev
       - task: app:deps
-      - echo "✅ Development environment setup complete"
 
   # === Development Tasks ===
   dev:
     desc: "Start all services for local development"
-    deps: [setup]
-    cmds:
-      - echo "🚀 Starting development environment..."
-      - echo "Run 'task web-api:run' and 'task worker:run' in separate terminals"
-      - echo "Run 'task app:dev' for frontend development server"
-      - echo "TODO - Implement parallel startup of all services"
+    deps: [setup, api:dev, worker:dev, app:dev]
 
   # === Testing Tasks ===
   test:
@@ -49,46 +44,92 @@ tasks:
     cmds:
       - task: python:test
       - task: app:test
-      - echo "✅ All tests completed"
+
+  test:parallel:
+    desc: "Run all tests in parallel for faster execution"
+    aliases: [tests:parallel]
+    cmds:
+      - task: python:test:parallel
+      - task: app:test
 
   # === Linting Tasks ===
   lint:
     desc: "Run all linters and formatters"
-    cmds:
-      - task: python:lint
-      - task: app:lint
-      - echo "✅ All linting completed"
+    deps: [python:lint, app:lint]
 
   lint:check:
     desc: "Check all linting without fixing"
     cmds:
       - task: python:lint:check
       - task: app:lint
-      - echo "✅ All linting checks completed"
 
   format:
     desc: "Format all code"
     cmds:
       - task: python:format
-      - task: app:lint
-      - echo "✅ All formatting completed"
+      - task: app:format
 
   # === Build Tasks ===
   build:
-    desc: "Build all services and frontend"
+    desc: "Build all services and frontend (production dependencies only)"
     cmds:
-      - task: python:build
+      - task: python:build:prod
       - task: app:build
-      - echo "✅ All builds completed"
 
   # === Utility Tasks ===
   doctor:
     desc: "Check for required development dependencies"
     silent: true
     cmds:
-      - echo "🔍 Checking development dependencies..."
+      - |
+        if ping -c 1 8.8.8.8 >/dev/null 2>&1; then
+          echo "✅ Network connectivity is working"
+        else
+          echo "❌ No network connectivity detected"
+        fi
+      - |
+        if scutil --nc status "Cato Networks VPN" | grep -q "^Connected"; then
+          echo "✅ Cato VPN is active"
+        else
+          echo "⚠️  Cato VPN is not active"
+        fi
+      - |
+        AWS_ERROR=$(aws sts get-caller-identity 2>&1)
+        if [ $? -eq 0 ]; then
+          AWS_ACCOUNT=$(echo "$AWS_ERROR" | jq -r '.Account' 2>/dev/null)
+          AWS_ARN=$(echo "$AWS_ERROR" | jq -r '.Arn' 2>/dev/null)
+          echo "✅ AWS credentials are valid (Account: $AWS_ACCOUNT)"
+          
+          # Check if the assumed role contains Hive-Eng-Dev (works for both SSO and direct role assumption)
+          if echo "$AWS_ARN" | grep -q "Hive-Eng-Dev"; then
+            echo "✅ Using Hive-Eng-Dev role via AWS SSO"
+          else
+            echo "❌ Not using Hive-Eng-Dev role"
+            echo "   Current role: $AWS_ARN"
+            echo "   Expected role to contain: Hive-Eng-Dev"
+          fi
+        else
+          if echo "$AWS_ERROR" | grep -q "ExpiredTokenException\|expired"; then
+            echo "❌ AWS credentials are expired"
+            echo "   Run: aws sso login"
+          elif echo "$AWS_ERROR" | grep -q "UnauthorizedOperation\|AccessDenied"; then
+            echo "❌ AWS credentials are unauthorized"
+            echo "   Check your AWS permissions"
+          else
+            echo "❌ AWS credentials are invalid or not configured"
+            echo "   Run: aws configure or aws sso login"
+          fi
+        fi
       - task: app:doctor
       - task: common:doctor
+      - |
+        if command -v git >/dev/null 2>&1; then
+          GIT_VERSION=$(git --version)
+          echo "✅ git is installed ($GIT_VERSION)"
+        else
+          echo "❌ git is not installed or not in PATH"
+          echo "   Install git: https://git-scm.com/downloads"
+        fi
       - |
         if command -v aws >/dev/null 2>&1; then
           AWS_VERSION=$(aws --version)
@@ -105,18 +146,15 @@ tasks:
           echo "⚠️  zsh is not the current shell (current: $SHELL)"
           echo "   Consider switching to zsh for better development experience"
         fi
-      - echo "🏥 Doctor check completed"
 
   clean:
     desc: "Clean build artifacts and caches"
     cmds:
-      - echo "🧹 Cleaning build artifacts..."
       - task: common:clean
-      - task: web-api:clean
+      - task: api:clean
       - task: worker:clean
       - task: app:clean
       - rm -rf dist/ build/ coverage/
-      - echo "✅ Clean completed"
 
   default:
     desc: "Show available tasks (default command)"
@@ -129,51 +167,71 @@ tasks:
       - task --list
   # === Internal Python Tasks (not exposed to users) ===
   python:deps:
-    desc: "Install Python dependencies for all services"
+    desc: "Install Python dependencies for all services (production only)"
     internal: true
     cmds:
       - task: common:deps
-      - task: web-api:deps
+      - task: api:deps
       - task: worker:deps
+
+  python:deps:dev:
+    desc: "Install Python dependencies for all services (including dev dependencies)"
+    internal: true
+    cmds:
+      - task: common:deps:dev
+      - task: api:deps:dev
+      - task: worker:deps:dev
 
   python:test:
     desc: "Run Python tests for all services"
     internal: true
     cmds:
       - task: common:test
-      - task: web-api:test
+      - task: api:test
       - task: worker:test
 
   python:lint:
     desc: "Run Python linting and formatting"
     internal: true
-    cmds:
-      - task: common:lint
-      - task: web-api:lint
-      - task: worker:lint
+    deps: [common:lint, api:lint, worker:lint]
 
   python:lint:check:
     desc: "Check Python linting without fixing"
     internal: true
     cmds:
       - task: common:lint:check
-      - task: web-api:lint:check
+      - task: api:lint:check
       - task: worker:lint:check
 
   python:format:
     desc: "Format Python code only"
     internal: true
     cmds:
-      - echo "🎨 Formatting Python code..."
       - task: common:format
-      - task: web-api:format
+      - task: api:format
       - task: worker:format
 
   python:build:
-    desc: "Build Python packages"
+    desc: "Build Python packages (production dependencies only)"
     internal: true
     cmds:
       - task: common:build
-      - task: web-api:build
+      - task: api:build
       - task: worker:build
+
+  python:build:prod:
+    desc: "Build Python packages (production dependencies only)"
+    internal: true
+    cmds:
+      - task: common:build
+      - task: api:build
+      - task: worker:build
+
+  python:test:parallel:
+    desc: "Run Python tests for all services in parallel"
+    internal: true
+    cmds:
+      - task: common:test
+      - task: api:test
+      - task: worker:test
 

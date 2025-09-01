@@ -17,7 +17,7 @@ A full-stack task management application with a React frontend and Python micros
 ├── packages/             # Shared backend libraries
 │   └── common/           # Shared code between services
 ├── services/             # Server-side services
-│   ├── web-api/          # FastAPI web service
+│   ├── api/              # FastAPI web service
 │   │   ├── app/          # API implementation
 │   │   └── tests/        # API unit tests
 │   └── worker/           # Background worker service

@@ -1,79 +1,74 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
-import { getTasks } from '@/api'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { useQuery } from '@tanstack/react-query';
+import { getTasks } from '../api';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Link } from 'react-router-dom';
+import { Plus, Calendar, User } from 'lucide-react';
 
 const Tasks = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const { data: tasks = [], isLoading, error } = useQuery('tasks', getTasks)
+  const {
+    data: tasks = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: getTasks,
+  });
 
-  const filteredTasks = tasks.filter(task => 
-    task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    (task.description && task.description.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
+  if (isLoading) return <div className="flex justify-center p-8">Loading tasks...</div>;
+  if (error) return <div className="flex justify-center p-8 text-red-500">Error loading tasks</div>;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Tasks</h1>
-        <Button asChild>
-          <Link to="/tasks/new">Add Task</Link>
-        </Button>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Tasks</h1>
+        <Link to="/tasks/new">
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            New Task
+          </Button>
+        </Link>
       </div>
 
-      <div className="flex w-full max-w-sm items-center space-x-2">
-        <Input
-          type="search"
-          placeholder="Search tasks..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {tasks.map((task) => (
+          <Link key={task.id} to={`/tasks/${task.id}`}>
+            <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  {task.title}
+                  <span
+                    className={`px-2 py-1 text-xs rounded-full ${
+                      task.status === 'completed'
+                        ? 'bg-green-100 text-green-800'
+                        : task.status === 'in_progress'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    {task.status.replace('_', ' ')}
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 mb-4">{task.description}</p>
+                <div className="flex items-center text-sm text-gray-500 space-x-4">
+                  <div className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}
+                  </div>
+                  <div className="flex items-center">
+                    <User className="w-4 h-4 mr-1" />
+                    {task.assignee_name || 'Unassigned'}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
-
-      {isLoading ? (
-        <div className="text-center">Loading tasks...</div>
-      ) : error ? (
-        <div className="rounded-md bg-destructive/15 p-4 text-destructive">
-          Error loading tasks: {error instanceof Error ? error.message : 'Unknown error'}
-        </div>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredTasks.length > 0 ? (
-            filteredTasks.map((task) => (
-              <Link key={task.id} to={`/tasks/${task.id}`}>
-                <Card className="h-full transition-colors hover:bg-muted/50">
-                  <CardHeader className="pb-2">
-                    <CardTitle>{task.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm text-muted-foreground line-clamp-2">
-                      {task.description || 'No description'}
-                    </div>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center">
-                        <span className={`mr-2 h-2 w-2 rounded-full ${task.is_completed ? 'bg-green-500' : 'bg-amber-500'}`}></span>
-                        <span className="text-sm">{task.is_completed ? 'Completed' : 'In Progress'}</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        User ID: {task.user_id}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))
-          ) : (
-            <div className="col-span-full text-center text-muted-foreground">
-              No tasks found matching "{searchTerm}"
-            </div>
-          )}
-        </div>
-      )}
     </div>
-  )
-}
+  );
+};
 
-export default Tasks 
+export default Tasks;

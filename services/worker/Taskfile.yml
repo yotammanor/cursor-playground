@@ -14,55 +14,51 @@ tasks:
       - task --list
 
   deps:
-    desc: "Install dependencies for worker service"
+    desc: "Install dependencies for worker service (production only)"
     cmds:
-      - echo "📦 Installing dependencies for {{.SERVICE_NAME}}..."
-      - uv sync --all-groups
+      - uv sync
 
   deps:dev:
     desc: "Install development dependencies for worker service"
     cmds:
-      - echo "🔧 Installing development dependencies for {{.SERVICE_NAME}}..."
-      - uv sync --all-groups
+      - uv sync --extra dev
 
   sync:
     desc: "Sync exact dependencies from lock files"
     cmds:
-      - echo "🔒 Syncing dependencies for {{.SERVICE_NAME}}..."
       - uv sync --frozen
 
   db:setup:
     desc: "Setup PostgreSQL database"
     cmds:
-      - echo "🗄️ Setting up database for {{.SERVICE_NAME}}..."
       - echo "Make sure PostgreSQL is running and create database:"
       - echo "createdb task_management"
       - echo "Or set DATABASE_URL environment variable"
 
   run:
     desc: "Run the worker service"
+    aliases: [run:dev, dev]
     cmds:
-      - echo "🚀 Starting {{.SERVICE_NAME}}..."
       - uv run python -m {{.PYTHON_SRC}}.main
 
   run:celery:
     desc: "Run the worker service with Celery"
+    aliases: [run:celery:dev, celery:dev]
     cmds:
-      - echo "🚀 Starting {{.SERVICE_NAME}} with Celery..."
       - uv run celery -A {{.PYTHON_SRC}}.main.celery_app worker --loglevel=info
 
   lint:
     desc: "Run linting and formatting for worker service"
+    deps: [format]
     cmds:
-      - echo "🔍 Linting {{.SERVICE_NAME}}..."
       - task: deps:dev
       - uv run ruff check {{.PYTHON_SRC}} --fix
       - uv run ruff format {{.PYTHON_SRC}}
 
   lint:check:
     desc: "Check linting without fixing"
+    deps: [format]
     cmds:
-      - echo "🔍 Checking lint for {{.SERVICE_NAME}}..."
       - task: deps:dev
       - uv run ruff check {{.PYTHON_SRC}} --diff
       - uv run ruff format {{.PYTHON_SRC}} --diff
@@ -70,20 +66,30 @@ tasks:
   format:
     desc: "Format code only"
     cmds:
-      - echo "🎨 Formatting {{.SERVICE_NAME}}..."
       - task: deps:dev
       - uv run ruff format {{.PYTHON_SRC}}
 
-  build:
-    desc: "Build worker service package"
+  test:
+    desc: "Run tests for worker service"
     cmds:
-      - echo "🏗️ Building {{.SERVICE_NAME}} package..."
-      - uv build
+      - uv sync --extra dev
+      - uv run pytest tests/ -v
+    status:
+      - test -d tests
+
+  test:unit:
+    desc: "Run unit tests for worker service"
+    cmds:
+      - task: test
+
+  build:
+    desc: "Build worker service package (production dependencies only)"
+    cmds:
+      - uv build # todo - this will need to change.
 
   clean:
     desc: "Clean build artifacts for worker"
     cmds:
-      - echo "🧹 Cleaning {{.SERVICE_NAME}} artifacts..."
       - rm -rf dist/ build/ .pytest_cache/
       - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 

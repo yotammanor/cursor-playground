@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const Home = () => {
   return (
@@ -11,7 +11,7 @@ const Home = () => {
           A full-stack application with React frontend and Python microservices backend.
         </p>
       </div>
-      
+
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
@@ -27,7 +27,7 @@ const Home = () => {
             </Button>
           </CardFooter>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Tasks</CardTitle>
@@ -42,7 +42,7 @@ const Home = () => {
             </Button>
           </CardFooter>
         </Card>
-        
+
         <Card>
           <CardHeader>
             <CardTitle>Tech Stack</CardTitle>
@@ -66,7 +66,7 @@ const Home = () => {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home 
+export default Home;
