@@ -35,16 +35,7 @@ class TestDatabase:
         with suppress(StopIteration):
             next(db_generator)  # This should close the session
 
-    def test_init_db_creates_tables(self, test_db):
-        """Test that init_db creates all tables."""
-        # Tables should already exist due to test_db fixture
-        # Let's verify they exist by querying them
-        users = test_db.query(User).all()
-        tasks = test_db.query(Task).all()
 
-        # Should be able to query without errors
-        assert isinstance(users, list)
-        assert isinstance(tasks, list)
 
     def test_database_operations(self, test_db):
         """Test basic database operations."""

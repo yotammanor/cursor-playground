@@ -1,6 +1,5 @@
 """Main FastAPI application."""
 
-from common.database import init_db
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,7 +34,6 @@ app.include_router(tasks.router, prefix="/api/tasks", tags=["tasks"])
 @app.on_event("startup")
 def startup_event():
     """Initialize database on startup."""
-    init_db()
 
 
 @app.get("/")

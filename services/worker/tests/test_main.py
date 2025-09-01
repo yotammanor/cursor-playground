@@ -109,39 +109,33 @@ class TestPollForTasks:
 class TestMain:
     """Test main function."""
 
-    @patch('worker.main.init_db')
     @patch('worker.main.poll_for_tasks')
     @patch('worker.main.time.sleep')
     @patch('worker.main.logger.info')
-    def test_main_success(self, mock_logger, mock_sleep, mock_poll, mock_init_db):
+    def test_main_success(self, mock_logger, mock_sleep, mock_poll):
         """Test successful main execution."""
         # Mock KeyboardInterrupt to stop the infinite loop
         mock_sleep.side_effect = KeyboardInterrupt()
         
         main()
         
-        # Verify database initialization
-        mock_init_db.assert_called_once()
-        
         # Verify polling was called
         mock_poll.assert_called_once()
         
         # Verify logging
         mock_logger.assert_any_call("Starting worker service...")
-        mock_logger.assert_any_call("Database initialized")
+        mock_logger.assert_any_call("Database schema managed by Alembic migrations")
         mock_logger.assert_any_call("Worker service stopped")
 
-    @patch('worker.main.init_db')
     @patch('worker.main.poll_for_tasks')
     @patch('worker.main.time.sleep')
     @patch('worker.main.logger.info')
-    def test_main_database_error(self, mock_logger, mock_sleep, mock_poll, mock_init_db):
-        """Test main function with database initialization error."""
-        # Mock database initialization error
-        mock_init_db.side_effect = Exception("Database connection failed")
+    def test_main_database_error(self, mock_logger, mock_sleep, mock_poll):
+        """Test main function execution."""
+        # Mock KeyboardInterrupt to stop the infinite loop
+        mock_sleep.side_effect = KeyboardInterrupt()
         
-        with pytest.raises(Exception):
-            main()
+        main()
         
         # Verify logging
         mock_logger.assert_called_with("Starting worker service...")
