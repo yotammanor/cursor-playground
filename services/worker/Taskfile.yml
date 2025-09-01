@@ -41,11 +41,10 @@ tasks:
     cmds:
       - uv run python -m {{.PYTHON_SRC}}.main
 
-  run:celery:
-    desc: "Run the worker service with Celery"
-    aliases: [run:celery:dev, celery:dev]
+  run:auto-shutdown:
+    desc: "Run the worker service with auto-shutdown enabled"
     cmds:
-      - uv run celery -A {{.PYTHON_SRC}}.main.celery_app worker --loglevel=info
+      - uv run python -m {{.PYTHON_SRC}}.main --auto-shutdown
 
   lint:
     desc: "Run linting and formatting for worker service"
@@ -54,8 +53,6 @@ tasks:
       - task: deps:dev
       - uv run ruff check {{.PYTHON_SRC}} --fix
       - uv run ruff format {{.PYTHON_SRC}}
-
-
 
   format:
     desc: "Format code only"
