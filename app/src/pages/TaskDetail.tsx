@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input, Textarea } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Badge } from '../components/ui/badge';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import {
   AlertDialog,
@@ -120,16 +121,16 @@ const TaskDetail = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case 'done':
-        return 'bg-green-100 text-green-800';
+        return 'success';
       case 'wip':
-        return 'bg-blue-100 text-blue-800';
+        return 'secondary';
       case 'failed':
-        return 'bg-red-100 text-red-800';
+        return 'destructive';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'secondary';
     }
   };
 
@@ -246,10 +247,10 @@ const TaskDetail = () => {
           </div>
           <div>
             <Label>Current Status</Label>
-            <span className={`inline-block px-3 py-2 text-sm rounded-full ${getStatusColor(task.status)}`}>
+            <Badge variant={getStatusVariant(task.status)} className="flex items-center">
               {getStatusIcon(task.status)}
               {getStatusText(task.status)}
-            </span>
+            </Badge>
           </div>
           <div>
             <Label htmlFor="user_id">Assigned User</Label>

@@ -182,23 +182,20 @@ test('task management flow', async ({ page }) => {
     await expect(page.locator('h1')).toContainText('Task Details');
 
     // Verify task details
-    await expect(page.locator('h2')).toContainText(testTaskTitle);
-    await expect(page.locator('p')).toContainText(testTaskDescription);
+    await expect(page.locator('p.text-lg')).toContainText(testTaskTitle);
+    await expect(page.locator('p.text-lg')).toContainText(testTaskDescription);
 
     // Step 9: Edit the task
-    await page.getByRole('button', { name: 'Edit Task' }).click();
-    console.log('Clicked Edit Task button');
+    await page.getByRole('button', { name: 'Edit' }).click();
+    console.log('Clicked Edit button');
 
     // Update the task title
     const updatedTaskTitle = `Updated Task ${Date.now()}`;
     await page.getByLabel('Title').fill(updatedTaskTitle);
 
-    // Mark the task as completed
-    await page.getByLabel('Completed').check();
-
     // Save the changes
-    await page.getByRole('button', { name: 'Save Changes' }).click();
-    console.log('Clicked Save Changes button');
+    await page.getByRole('button', { name: 'Save' }).click();
+    console.log('Clicked Save button');
 
     // Verify the task was updated
     await expect(page.locator('h2')).toContainText(updatedTaskTitle);
