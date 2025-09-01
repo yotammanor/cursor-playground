@@ -41,6 +41,7 @@ const TaskDetail = () => {
     queryKey: ['task', id],
     queryFn: () => getTask(Number(id)),
     enabled: !!id,
+    refetchInterval: 1000, // Poll every 1 second
   });
 
   const updateMutation = useMutation({

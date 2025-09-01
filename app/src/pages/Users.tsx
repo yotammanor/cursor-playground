@@ -13,6 +13,7 @@ const Users = () => {
   } = useQuery({
     queryKey: ['users'],
     queryFn: getUsers,
+    refetchInterval: 1000, // Poll every 1 second
   });
 
   if (isLoading) return <div className="flex justify-center p-8">Loading users...</div>;

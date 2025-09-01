@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { createTask, getUsers } from '../api';
+import { useToast } from '../hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input, Textarea } from '../components/ui/input';
@@ -12,6 +13,7 @@ import { ArrowLeft, Save, AlertCircle } from 'lucide-react';
 const TaskCreate = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -22,16 +24,25 @@ const TaskCreate = () => {
   const { data: users = [], isLoading: usersLoading } = useQuery({
     queryKey: ['users'],
     queryFn: getUsers,
+    refetchInterval: 1000, // Poll every 1 second
   });
 
   const createMutation = useMutation({
     mutationFn: createTask,
     onSuccess: () => {
+      toast({
+        title: 'Success!',
+        description: 'Task created successfully.',
+      });
       void queryClient.invalidateQueries({ queryKey: ['tasks'] });
       void navigate('/tasks');
     },
     onError: (error) => {
-      console.error('Failed to create task:', error);
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to create task. Please try again.',
+        variant: 'destructive',
+      });
     },
   });
 

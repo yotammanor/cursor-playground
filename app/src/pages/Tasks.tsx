@@ -15,6 +15,7 @@ const Tasks = () => {
   } = useQuery({
     queryKey: ['tasks'],
     queryFn: getTasks,
+    refetchInterval: 1000, // Poll every 1 second
   });
 
   if (isLoading)

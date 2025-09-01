@@ -28,12 +28,14 @@ const UserDetail = () => {
     queryKey: ['user', id],
     queryFn: () => getUser(Number(id)),
     enabled: !!id,
+    refetchInterval: 1000, // Poll every 1 second
   });
 
   const { data: userTasks, isLoading: tasksLoading } = useQuery({
     queryKey: ['user-tasks', id],
     queryFn: () => getUserTasks(Number(id)),
     enabled: !!id,
+    refetchInterval: 1000, // Poll every 1 second
   });
 
   const updateMutation = useMutation({
@@ -167,10 +169,22 @@ const UserDetail = () => {
                   <p className="text-sm text-gray-600">{task.description}</p>
                   <span
                     className={`inline-block px-2 py-1 text-xs rounded-full mt-2 ${
-                      task.is_completed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                      task.status === 'done'
+                        ? 'bg-green-100 text-green-800'
+                        : task.status === 'wip'
+                          ? 'bg-blue-100 text-blue-800'
+                          : task.status === 'failed'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-gray-100 text-gray-800'
                     }`}
                   >
-                    {task.is_completed ? 'Completed' : 'Pending'}
+                    {task.status === 'done'
+                      ? 'Completed'
+                      : task.status === 'wip'
+                        ? 'In Progress'
+                        : task.status === 'failed'
+                          ? 'Failed'
+                          : 'Pending'}
                   </span>
                 </div>
               ))}
