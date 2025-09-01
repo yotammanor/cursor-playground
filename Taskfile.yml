@@ -41,40 +41,23 @@ tasks:
   test:
     desc: "Run all tests (unit + e2e)"
     aliases: [tests]
-    cmds:
-      - task: python:test
-      - task: app:test
+    deps: [python:test, app:test]
 
-  test:parallel:
-    desc: "Run all tests in parallel for faster execution"
-    aliases: [tests:parallel]
-    cmds:
-      - task: python:test:parallel
-      - task: app:test
 
-  # === Linting Tasks ===
   lint:
     desc: "Run all linters and formatters"
     deps: [python:lint, app:lint]
 
-  lint:check:
-    desc: "Check all linting without fixing"
-    cmds:
-      - task: python:lint:check
-      - task: app:lint
+
 
   format:
     desc: "Format all code"
-    cmds:
-      - task: python:format
-      - task: app:format
+    deps: [python:format, app:format]
 
   # === Build Tasks ===
   build:
     desc: "Build all services and frontend (production dependencies only)"
-    cmds:
-      - task: python:build:prod
-      - task: app:build
+    deps: [python:build:prod, app:build]
 
   # === Utility Tasks ===
   doctor:
@@ -169,39 +152,25 @@ tasks:
   python:deps:
     desc: "Install Python dependencies for all services (production only)"
     internal: true
-    cmds:
-      - task: common:deps
-      - task: api:deps
-      - task: worker:deps
+    deps: [common:deps, api:deps, worker:deps]
 
   python:deps:dev:
     desc: "Install Python dependencies for all services (including dev dependencies)"
     internal: true
-    cmds:
-      - task: common:deps:dev
-      - task: api:deps:dev
-      - task: worker:deps:dev
+    deps: [common:deps:dev, api:deps:dev, worker:deps:dev]
+
 
   python:test:
     desc: "Run Python tests for all services"
     internal: true
-    cmds:
-      - task: common:test
-      - task: api:test
-      - task: worker:test
+    deps: [common:test, api:test, worker:test]
 
   python:lint:
     desc: "Run Python linting and formatting"
     internal: true
     deps: [common:lint, api:lint, worker:lint]
 
-  python:lint:check:
-    desc: "Check Python linting without fixing"
-    internal: true
-    cmds:
-      - task: common:lint:check
-      - task: api:lint:check
-      - task: worker:lint:check
+
 
   python:format:
     desc: "Format Python code only"
@@ -222,16 +191,4 @@ tasks:
   python:build:prod:
     desc: "Build Python packages (production dependencies only)"
     internal: true
-    cmds:
-      - task: common:build
-      - task: api:build
-      - task: worker:build
-
-  python:test:parallel:
-    desc: "Run Python tests for all services in parallel"
-    internal: true
-    cmds:
-      - task: common:test
-      - task: api:test
-      - task: worker:test
-
+    deps: [common:build, api:build, worker:build]

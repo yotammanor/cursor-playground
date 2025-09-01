@@ -55,13 +55,7 @@ tasks:
       - uv run ruff check {{.PYTHON_SRC}} --fix
       - uv run ruff format {{.PYTHON_SRC}}
 
-  lint:check:
-    desc: "Check linting without fixing"
-    deps: [format]
-    cmds:
-      - task: deps:dev
-      - uv run ruff check {{.PYTHON_SRC}} --diff
-      - uv run ruff format {{.PYTHON_SRC}} --diff
+
 
   format:
     desc: "Format code only"

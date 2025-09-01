@@ -68,12 +68,7 @@ tasks:
       - uv run ruff check src {{.TESTS_DIR}} --fix
       - uv run ruff format src {{.TESTS_DIR}}
 
-  lint:check:
-    desc: "Check linting without fixing"
-    cmds:
-      - task: deps:dev
-      - uv run ruff check src {{.TESTS_DIR}} --diff
-      - uv run ruff format src {{.TESTS_DIR}} --diff
+
 
   format:
     desc: "Format code only"
