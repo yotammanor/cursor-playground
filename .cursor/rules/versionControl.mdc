@@ -13,3 +13,4 @@ alwaysApply: true
   - no lengthly commits.
   - imperative tone.
 - when unsure, stop and consult.
+- AWAIT FOR USER APPROVAL BEFORE COMMIT
