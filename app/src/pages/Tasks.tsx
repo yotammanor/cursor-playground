@@ -3,6 +3,7 @@ import { getTasks } from '../api';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
+import { Skeleton } from '../components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { Plus, CheckCircle, Circle, User, Clock, UserCheck, AlertCircle } from 'lucide-react';
 
@@ -16,7 +17,26 @@ const Tasks = () => {
     queryFn: getTasks,
   });
 
-  if (isLoading) return <div className="flex justify-center p-8">Loading tasks...</div>;
+  if (isLoading)
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <Skeleton className="h-9 w-32" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Card key={i} className="p-6">
+              <div className="space-y-3">
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
   if (error)
     return (
       <div className="flex justify-center p-8 text-red-500">
