@@ -19,6 +19,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",  # Default Vite dev server
         "http://localhost:5174",  # Fallback Vite dev server
+        "http://localhost:5175",  # Additional Vite dev server
+        "http://localhost:5176",  # Additional Vite dev server
         "http://localhost:3000",  # Alternative dev server
     ],
     allow_credentials=True,

@@ -4,6 +4,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr
 
+from common.models import TaskStatus
+
 
 class UserBase(BaseModel):
     """Base user schema."""
@@ -59,15 +61,21 @@ class TaskUpdate(BaseModel):
 
     title: str | None = None
     description: str | None = None
-    is_completed: bool | None = None
+    status: TaskStatus | None = None
+    worker_id: str | None = None
+    error_message: str | None = None
 
 
 class Task(TaskBase):
     """Task schema."""
 
     id: int
-    is_completed: bool
+    status: TaskStatus
     user_id: int
+    worker_id: str | None = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+    error_message: str | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -75,3 +83,11 @@ class Task(TaskBase):
         """Pydantic config."""
 
         from_attributes = True
+
+
+class TaskStatusUpdate(BaseModel):
+    """Task status update schema for worker operations."""
+
+    status: TaskStatus
+    worker_id: str | None = None
+    error_message: str | None = None

@@ -1,9 +1,11 @@
 """Task router."""
 
+from datetime import datetime
+
 from common.database import get_db
-from common.models import Task, User
+from common.models import Task, TaskStatus, User
 from common.schemas import Task as TaskSchema
-from common.schemas import TaskCreate, TaskUpdate
+from common.schemas import TaskCreate, TaskStatusUpdate, TaskUpdate
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -25,6 +27,7 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
         title=task.title,
         description=task.description,
         user_id=task.user_id,
+        status=TaskStatus.PENDING,
     )
     db.add(db_task)
     db.commit()
@@ -47,6 +50,7 @@ def create_task_no_slash(task: TaskCreate, db: Session = Depends(get_db)):
         title=task.title,
         description=task.description,
         user_id=task.user_id,
+        status=TaskStatus.PENDING,
     )
     db.add(db_task)
     db.commit()
@@ -115,3 +119,36 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
 
     db.delete(db_task)
     db.commit()
+
+
+# Worker-specific endpoints
+@router.get("/worker/pending", response_model=list[TaskSchema])
+def get_pending_tasks(db: Session = Depends(get_db)):
+    """Get all pending tasks for workers."""
+    return db.query(Task).filter(Task.status == TaskStatus.PENDING).all()
+
+
+@router.put("/{task_id}/status", response_model=TaskSchema)
+def update_task_status(task_id: int, status_update: TaskStatusUpdate, db: Session = Depends(get_db)):
+    """Update task status (worker operation)."""
+    db_task = db.query(Task).filter(Task.id == task_id).first()
+    if db_task is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Task not found",
+        )
+
+    # Update status and related fields
+    db_task.status = status_update.status
+    db_task.worker_id = status_update.worker_id
+    db_task.error_message = status_update.error_message
+
+    # Update timestamps based on status
+    if status_update.status == TaskStatus.WIP:
+        db_task.started_at = datetime.utcnow()
+    elif status_update.status in {TaskStatus.DONE, TaskStatus.FAILED}:
+        db_task.completed_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(db_task)
+    return db_task

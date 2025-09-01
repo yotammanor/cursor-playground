@@ -5,8 +5,6 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from common.models import Base
-
 # Database configuration - would typically be loaded from environment variables
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
 
@@ -27,6 +25,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-

@@ -29,8 +29,12 @@ const TaskSchema = z.object({
   id: z.number(),
   title: z.string(),
   description: z.string().optional(),
-  is_completed: z.boolean(),
+  status: z.enum(['pending', 'wip', 'done', 'failed']),
   user_id: z.number(),
+  worker_id: z.string().nullable(),
+  started_at: z.string().nullable(),
+  completed_at: z.string().nullable(),
+  error_message: z.string().nullable(),
   created_at: z.string(),
   updated_at: z.string(),
 });

@@ -24,8 +24,12 @@ export interface Task {
   id: number;
   title: string;
   description?: string;
-  is_completed: boolean;
+  status: 'pending' | 'wip' | 'done' | 'failed';
   user_id: number;
+  worker_id: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  error_message: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -39,6 +43,8 @@ export interface TaskCreateInput {
 export interface TaskUpdateInput {
   title?: string;
   description?: string;
-  is_completed?: boolean;
+  status?: 'pending' | 'wip' | 'done' | 'failed';
   user_id?: number;
+  worker_id?: string;
+  error_message?: string;
 }

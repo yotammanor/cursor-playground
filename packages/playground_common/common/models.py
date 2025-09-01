@@ -1,10 +1,21 @@
 """SQLAlchemy models shared between services."""
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
+import enum
+
+from sqlalchemy import Boolean, Column, DateTime, Enum, ForeignKey, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 
 Base = declarative_base()
+
+
+class TaskStatus(str, enum.Enum):
+    """Task status enum."""
+
+    PENDING = "pending"
+    WIP = "wip"
+    DONE = "done"
+    FAILED = "failed"
 
 
 class User(Base):
@@ -32,10 +43,14 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(100), index=True)
     description = Column(Text)
-    is_completed = Column(Boolean, default=False)
+    status = Column(Enum(TaskStatus), default=TaskStatus.PENDING, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
+    worker_id = Column(String(100), nullable=True)  # Worker identifier
+    started_at = Column(DateTime, nullable=True)  # When work started
+    completed_at = Column(DateTime, nullable=True)  # When work completed
+    error_message = Column(Text, nullable=True)  # Error details if failed
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
 
     def __str__(self):
-        return f"Task(id={self.id}, title='{self.title}')"
+        return f"Task(id={self.id}, title='{self.title}', status='{self.status}')"
