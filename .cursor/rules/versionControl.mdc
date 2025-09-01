@@ -1,0 +1,15 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+- On every completed task, make sure to commit changes.
+- make sure to run `task lint` before you commit.
+- pick only the selected changes to be stage.
+- NOTE - other agents may edit files, be strict on what you add.
+- NOTE - NEVER cause unversioned files to be deleted.
+- commit messages are format <overall location of change>: <short one line description of change.>
+  - no lengthly commits.
+  - imperative tone.
+- when unsure, stop and consult.
