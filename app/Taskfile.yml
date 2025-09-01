@@ -37,7 +37,7 @@ tasks:
   dev:
     desc: 'Start frontend development server'
     cmds:
-      - yarn dev
+      - ../scripts/safe-start.sh "Frontend Dev Server" 5174 yarn dev
     env:
       CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 

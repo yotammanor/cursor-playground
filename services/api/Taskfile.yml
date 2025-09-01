@@ -81,7 +81,7 @@ tasks:
     deps: [deps:dev, db:migrate]
     aliases: [run:dev, dev]
     cmds:
-      - uv run .venv/bin/python -m uvicorn src.main:app --reload --host 0.0.0.0 --port {{.PORT}}
+      - ../../scripts/safe-start.sh "API Service" {{.PORT}} uv run .venv/bin/python -m uvicorn src.main:app --reload --host 0.0.0.0 --port {{.PORT}}
 
   run:prod:
     desc: "Run the api service in production mode"
