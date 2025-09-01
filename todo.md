@@ -158,15 +158,15 @@
 - [ ] Update `README.md` with new e2e commands and structure
 
 ### Shadcn UI Migration
-- [ ] Migrate remaining UI to shadcn components
+- [x] Migrate remaining UI to shadcn components
   - [x] Add missing shadcn components to `app/src/components/ui`: `badge`, `alert`, `alert-dialog`, `select`, `skeleton`, `toast`, `breadcrumb`, `separator`
   - [x] Replace status pills with `Badge` in `app/src/pages/Tasks.tsx`, `app/src/pages/TaskDetail.tsx`, `app/src/pages/UserDetail.tsx` (map: done → success, wip → secondary, failed → destructive, default → secondary)
   - [x] Replace browser `confirm()` with `AlertDialog` in `app/src/pages/TaskDetail.tsx`, `app/src/pages/UserDetail.tsx`
-  - [ ] Use `Alert` for error states across list/detail pages instead of plain text with red classes
+  - [x] Use `Alert` for error states across list/detail pages instead of plain text with red classes
   - [x] Add `Skeleton` loaders for list and detail pages during `isLoading`
   - [x] Keep current form state management (useState) - forms are simple enough and work well
   - [x] Replace numeric `user_id` field with `Select` populated from users API in `app/src/pages/TaskCreate.tsx`
   - [x] Add `Toast` notifications for create/update/delete success and failure flows
-  - [ ] Optional: add `Breadcrumb` to detail pages; use `Separator` between sections; standardize `Badge` variants in a small helper
+  - [x] Optional: add `Breadcrumb` to detail pages; use `Separator` between sections; standardize `Badge` variants in a small helper
   - [ ] Update tests and selectors to reflect UI changes (cards/badges/dialogs/toasts)
-  - [ ] Add deps as needed: `@radix-ui/react-alert-dialog`, `@radix-ui/react-select`, and toast per shadcn preset; update `app/README.md` accordingly
+  - [x] Add deps as needed: `@radix-ui/react-alert-dialog`, `@radix-ui/react-select`, and toast per shadcn preset; update `app/README.md` accordingly
