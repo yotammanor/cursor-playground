@@ -14,10 +14,15 @@ const TaskDetail = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    status: 'pending' | 'in_progress' | 'completed';
+    due_date: string;
+  }>({
     title: '',
     description: '',
-    status: '',
+    status: 'pending',
     due_date: '',
   });
 
@@ -34,8 +39,8 @@ const TaskDetail = () => {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: TaskUpdateInput }) => updateTask(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['task', id] });
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      void queryClient.invalidateQueries({ queryKey: ['task', id] });
+      void queryClient.invalidateQueries({ queryKey: ['tasks'] });
       setIsEditing(false);
     },
   });
@@ -43,8 +48,8 @@ const TaskDetail = () => {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteTask(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks'] });
-      navigate('/tasks');
+      void queryClient.invalidateQueries({ queryKey: ['tasks'] });
+      void navigate('/tasks');
     },
   });
 
@@ -148,7 +153,7 @@ const TaskDetail = () => {
                 id="status"
                 value={formData.status}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setFormData({ ...formData, status: e.target.value })
+                  setFormData({ ...formData, status: e.target.value as 'pending' | 'in_progress' | 'completed' })
                 }
                 className="w-full p-2 border rounded-md"
               >

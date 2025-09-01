@@ -39,7 +39,7 @@ const UserDetail = () => {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: UserUpdateInput }) => updateUser(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user', id] });
+      void queryClient.invalidateQueries({ queryKey: ['user', id] });
       setIsEditing(false);
     },
   });
@@ -47,8 +47,8 @@ const UserDetail = () => {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteUser(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      navigate('/users');
+      void queryClient.invalidateQueries({ queryKey: ['users'] });
+      void navigate('/users');
     },
   });
 

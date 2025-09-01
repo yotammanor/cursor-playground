@@ -20,8 +20,8 @@ const UserCreate = () => {
   const createMutation = useMutation({
     mutationFn: createUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-      navigate('/users');
+      void queryClient.invalidateQueries({ queryKey: ['users'] });
+      void navigate('/users');
     },
   });
 
@@ -38,7 +38,7 @@ const UserCreate = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center space-x-4">
-        <Button variant="outline" onClick={() => navigate('/users')}>
+        <Button variant="outline" onClick={() => void navigate('/users')}>
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Users
         </Button>
@@ -75,7 +75,7 @@ const UserCreate = () => {
                 <Save className="w-4 h-4 mr-2" />
                 {createMutation.isPending ? 'Creating...' : 'Create User'}
               </Button>
-              <Button type="button" variant="outline" onClick={() => navigate('/users')}>
+              <Button type="button" variant="outline" onClick={() => void navigate('/users')}>
                 Cancel
               </Button>
             </div>
