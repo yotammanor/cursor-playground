@@ -11,6 +11,18 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
+@router.get("/", response_model=list[UserSchema])
+def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Get all users."""
+    return db.query(User).offset(skip).limit(limit).all()
+
+
+@router.get("", response_model=list[UserSchema])
+def read_users_no_slash(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Get all users (no trailing slash)."""
+    return db.query(User).offset(skip).limit(limit).all()
+
+
 @router.post("/", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """Create a new user."""
@@ -32,10 +44,25 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 
-@router.get("/", response_model=list[UserSchema])
-def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """Get all users."""
-    return db.query(User).offset(skip).limit(limit).all()
+@router.post("", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
+def create_user_no_slash(user: UserCreate, db: Session = Depends(get_db)):
+    """Create a new user (no trailing slash)."""
+    db_user = db.query(User).filter(User.email == user.email).first()
+    if db_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered",
+        )
+
+    db_user = User(
+        username=user.username,
+        email=user.email,
+        hashed_password=get_password_hash(user.password),
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 
 @router.get("/{user_id}", response_model=UserSchema)

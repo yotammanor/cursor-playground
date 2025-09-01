@@ -32,9 +32,37 @@ def create_task(task: TaskCreate, db: Session = Depends(get_db)):
     return db_task
 
 
+@router.post("", response_model=TaskSchema, status_code=status.HTTP_201_CREATED)
+def create_task_no_slash(task: TaskCreate, db: Session = Depends(get_db)):
+    """Create a new task (no trailing slash)."""
+    # Verify user exists
+    user = db.query(User).filter(User.id == task.user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id {task.user_id} not found",
+        )
+
+    db_task = Task(
+        title=task.title,
+        description=task.description,
+        user_id=task.user_id,
+    )
+    db.add(db_task)
+    db.commit()
+    db.refresh(db_task)
+    return db_task
+
+
 @router.get("/", response_model=list[TaskSchema])
 def read_tasks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """Get all tasks."""
+    return db.query(Task).offset(skip).limit(limit).all()
+
+
+@router.get("", response_model=list[TaskSchema])
+def read_tasks_no_slash(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Get all tasks (no trailing slash)."""
     return db.query(Task).offset(skip).limit(limit).all()
 
 
