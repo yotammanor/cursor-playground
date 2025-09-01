@@ -8,7 +8,7 @@ import { Button } from '../components/ui/button';
 import { Input, Textarea } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { ArrowLeft, Save, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 
 const TaskCreate = () => {
   const navigate = useNavigate();
@@ -113,18 +113,6 @@ const TaskCreate = () => {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* Error display */}
-            {createMutation.error && (
-              <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-md">
-                <AlertCircle className="w-4 h-4" />
-                <span>
-                  {createMutation.error instanceof Error
-                    ? createMutation.error.message
-                    : 'Failed to create task. Please try again.'}
-                </span>
-              </div>
-            )}
 
             <div className="flex space-x-2">
               <Button type="submit" disabled={createMutation.isPending || !isFormValid || usersLoading}>

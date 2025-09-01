@@ -8,6 +8,7 @@ import UserCreate from './pages/UserCreate';
 import TaskDetail from './pages/TaskDetail';
 import TaskCreate from './pages/TaskCreate';
 import NotFound from './pages/NotFound';
+import { Toaster } from './components/ui/toaster';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+      <Toaster />
     </div>
   );
 }
