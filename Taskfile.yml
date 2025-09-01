@@ -25,14 +25,21 @@ includes:
 
 tasks:
 
+  default:
+    desc: "Show available tasks (default command)"
+    cmds:
+      - task --list
+
+  help:
+    desc: "Show available tasks"
+    cmds:
+      - task --list
+
+
   setup:
     desc: "Set up the entire development environment (includes dev dependencies)"
     aliases: [install]
-    cmds:
-      - task: common:deps:dev
-      - task: api:deps:dev
-      - task: worker:deps:dev
-      - task: app:deps
+    deps: [common:deps:dev, api:deps:dev, worker:deps:dev, app:deps]
 
 
   dev:
@@ -60,6 +67,12 @@ tasks:
   build:
     desc: "Build all services and frontend (production dependencies only)"
     deps: [common:build, api:build, worker:build, app:build]
+
+  clean:
+    desc: "Clean build artifacts and caches"
+    deps: [common:clean, api:clean, worker:clean, app:clean]
+    cmds:
+      - rm -rf dist/ build/ coverage/
 
 
   doctor:
@@ -131,23 +144,3 @@ tasks:
           echo "⚠️  zsh is not the current shell (current: $SHELL)"
           echo "   Consider switching to zsh for better development experience"
         fi
-
-  clean:
-    desc: "Clean build artifacts and caches"
-    cmds:
-      - task: common:clean
-      - task: api:clean
-      - task: worker:clean
-      - task: app:clean
-      - rm -rf dist/ build/ coverage/
-
-  default:
-    desc: "Show available tasks (default command)"
-    cmds:
-      - task --list
-
-  help:
-    desc: "Show available tasks"
-    cmds:
-      - task --list
-
