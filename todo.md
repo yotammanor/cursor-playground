@@ -168,5 +168,5 @@
   - [x] Replace numeric `user_id` field with `Select` populated from users API in `app/src/pages/TaskCreate.tsx`
   - [x] Add `Toast` notifications for create/update/delete success and failure flows
   - [x] Optional: add `Breadcrumb` to detail pages; use `Separator` between sections; standardize `Badge` variants in a small helper
-  - [ ] Update tests and selectors to reflect UI changes (cards/badges/dialogs/toasts)
+  - [x] Update tests and selectors to reflect UI changes (cards/badges/dialogs/toasts)
   - [x] Add deps as needed: `@radix-ui/react-alert-dialog`, `@radix-ui/react-select`, and toast per shadcn preset; update `app/README.md` accordingly
