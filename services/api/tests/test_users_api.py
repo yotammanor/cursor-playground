@@ -1,7 +1,10 @@
 """Unit tests for the users API endpoints."""
 
-from common.database import Base, get_db
-from common.models import User
+import os
+import tempfile
+
+from common.database import get_db
+from common.models import Base, User
 from common.utils import get_password_hash
 from fastapi.testclient import TestClient
 import pytest
@@ -11,36 +14,26 @@ from sqlalchemy.pool import StaticPool
 
 from src.main import app
 
-# Create an in-memory SQLite database for testing
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create the database tables
-Base.metadata.create_all(bind=engine)
-
-
-# Dependency override for database session
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
-
 
 @pytest.fixture
 def test_db():
+    """Create a new database for each test."""
+    # Create a temporary database file
+    with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tmp:
+        db_path = tmp.name
+
+    # Create engine for this test
+    engine = create_engine(
+        f"sqlite:///{db_path}",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+
     # Create tables
     Base.metadata.create_all(bind=engine)
+
+    # Create session factory
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
     # Create a test user
     db = TestingSessionLocal()
@@ -52,15 +45,39 @@ def test_db():
     db.add(test_user)
     db.commit()
     db.refresh(test_user)
+    user_id = test_user.id
     db.close()
 
-    yield  # Run the test
+    # Override the database dependency for this test
+    def override_get_db():
+        db = TestingSessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    yield user_id  # Return the user ID
 
     # Clean up
-    Base.metadata.drop_all(bind=engine)
+    app.dependency_overrides.clear()
+    engine.dispose()
+
+    # Remove the temporary database file
+    try:
+        os.unlink(db_path)
+    except OSError:
+        pass
 
 
-def test_create_user():
+@pytest.fixture
+def client():
+    """Create a test client."""
+    return TestClient(app)
+
+
+def test_create_user(test_db, client):
     """Test creating a new user."""
     response = client.post(
         "/api/users/",
@@ -74,7 +91,7 @@ def test_create_user():
     assert "hashed_password" not in data
 
 
-def test_create_user_duplicate_email(test_db):
+def test_create_user_duplicate_email(test_db, client):
     """Test creating a user with an email that already exists."""
     # First create a user
     response = client.post(
@@ -85,7 +102,7 @@ def test_create_user_duplicate_email(test_db):
     assert response.json()["detail"] == "Email already registered"
 
 
-def test_read_users(test_db):
+def test_read_users(test_db, client):
     """Test getting all users."""
     response = client.get("/api/users/")
     assert response.status_code == 200
@@ -95,7 +112,7 @@ def test_read_users(test_db):
     assert data[0]["email"] == "test@example.com"
 
 
-def test_read_user(test_db):
+def test_read_user(test_db, client):
     """Test getting a specific user."""
     # First get all users to find the ID
     users_response = client.get("/api/users/")
@@ -111,14 +128,14 @@ def test_read_user(test_db):
     assert data["email"] == "test@example.com"
 
 
-def test_read_user_not_found(test_db):
+def test_read_user_not_found(client):
     """Test getting a user that doesn't exist."""
     response = client.get("/api/users/999")
     assert response.status_code == 404
     assert response.json()["detail"] == "User not found"
 
 
-def test_update_user(test_db):
+def test_update_user(test_db, client):
     """Test updating a user."""
     # First get all users to find the ID
     users_response = client.get("/api/users/")
@@ -137,7 +154,7 @@ def test_update_user(test_db):
     assert data["email"] == "test@example.com"
 
 
-def test_update_user_not_found(test_db):
+def test_update_user_not_found(client):
     """Test updating a user that doesn't exist."""
     response = client.put(
         "/api/users/999",
@@ -147,7 +164,7 @@ def test_update_user_not_found(test_db):
     assert response.json()["detail"] == "User not found"
 
 
-def test_delete_user(test_db):
+def test_delete_user(test_db, client):
     """Test deleting a user."""
     # First get all users to find the ID
     users_response = client.get("/api/users/")
@@ -163,7 +180,7 @@ def test_delete_user(test_db):
     assert get_response.status_code == 404
 
 
-def test_delete_user_not_found(test_db):
+def test_delete_user_not_found(client):
     """Test deleting a user that doesn't exist."""
     response = client.delete("/api/users/999")
     assert response.status_code == 404
