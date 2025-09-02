@@ -5,7 +5,7 @@ const Layout = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-10 border-b bg-background">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-6 lg:px-8 flex h-16 items-center justify-between">
           <div className="text-xl font-bold">Task Management</div>
           <nav className="flex items-center gap-4">
             <Button asChild variant="ghost">
@@ -20,11 +20,11 @@ const Layout = () => {
           </nav>
         </div>
       </header>
-      <main className="container flex-1 py-6">
+      <main className="mx-auto w-full max-w-screen-2xl px-4 md:px-6 lg:px-8 flex-1 py-6">
         <Outlet />
       </main>
       <footer className="border-t py-4">
-        <div className="container text-center text-sm text-muted-foreground">
+        <div className="mx-auto w-full max-w-screen-2xl px-4 md:px-6 lg:px-8 text-center text-sm text-muted-foreground">
           &copy; {new Date().getFullYear()} Task Management App
         </div>
       </footer>

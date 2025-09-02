@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Github, ExternalLink } from 'lucide-react';
 
 const Home = () => {
   return (
@@ -49,17 +50,33 @@ const Home = () => {
             <CardDescription>Modern technologies</CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>React 18 with TypeScript</li>
-              <li>Shadcn UI & Tailwind CSS v4</li>
-              <li>FastAPI backend</li>
-              <li>SQLAlchemy ORM</li>
-            </ul>
+            <div className="space-y-3">
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2">Frontend</h4>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>React 19 with TypeScript</li>
+                  <li>Vite 5.x build tool</li>
+                  <li>Tailwind CSS v4</li>
+                  <li>Shadcn UI components</li>
+                  <li>React Query & React Router</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-sm text-muted-foreground mb-2">Backend</h4>
+                <ul className="list-disc pl-5 space-y-1 text-sm">
+                  <li>Python 3.10</li>
+                  <li>FastAPI framework</li>
+                  <li>SQLAlchemy ORM</li>
+                  <li>Pydantic validation</li>
+                </ul>
+              </div>
+            </div>
           </CardContent>
           <CardFooter>
             <Button variant="outline" asChild>
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-                View Source
+              <a href="https://github.com/yotammanor/cursor-playground" target="_blank" rel="noopener noreferrer">
+                <Github className="w-5 h-5 mr-2" />
+                <ExternalLink className="w-4 h-4" />
               </a>
             </Button>
           </CardFooter>
