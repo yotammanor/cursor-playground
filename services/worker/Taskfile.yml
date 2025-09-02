@@ -72,8 +72,6 @@ tasks:
     cmds:
       - uv sync --extra dev
       - uv run pytest tests/ -v
-    status:
-      - test -d tests
 
   test:unit:
     desc: "Run unit tests for worker service"

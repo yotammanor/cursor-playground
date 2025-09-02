@@ -39,13 +39,7 @@ tasks:
     cmds:
       - uv sync --extra dev
       - uv run pytest {{.TESTS_DIR}}/ -v
-    status:
-      - test -d {{.TESTS_DIR}}
 
-  test:unit:
-    desc: "Run unit tests for common package"
-    cmds:
-      - task: test
 
   lint:
     desc: "Run linting and formatting for common package"
