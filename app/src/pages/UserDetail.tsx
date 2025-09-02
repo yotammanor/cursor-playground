@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Badge } from '../components/ui/badge';
 import { Trash2, Edit, Save, X, User } from 'lucide-react';
 
 const UserDetail = () => {
@@ -78,6 +79,32 @@ const UserDetail = () => {
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete this user?')) {
       deleteMutation.mutate(user.id);
+    }
+  };
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'done':
+        return 'success';
+      case 'wip':
+        return 'info';
+      case 'failed':
+        return 'destructive';
+      default:
+        return 'secondary';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'done':
+        return 'Completed';
+      case 'wip':
+        return 'In Progress';
+      case 'failed':
+        return 'Failed';
+      default:
+        return 'Pending';
     }
   };
 
@@ -167,25 +194,9 @@ const UserDetail = () => {
                 <div key={task.id} className="p-3 border rounded-lg">
                   <h4 className="font-medium">{task.title}</h4>
                   <p className="text-sm text-gray-600">{task.description}</p>
-                  <span
-                    className={`inline-block px-2 py-1 text-xs rounded-full mt-2 ${
-                      task.status === 'done'
-                        ? 'bg-green-100 text-green-800'
-                        : task.status === 'wip'
-                          ? 'bg-blue-100 text-blue-800'
-                          : task.status === 'failed'
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {task.status === 'done'
-                      ? 'Completed'
-                      : task.status === 'wip'
-                        ? 'In Progress'
-                        : task.status === 'failed'
-                          ? 'Failed'
-                          : 'Pending'}
-                  </span>
+                  <Badge variant={getStatusVariant(task.status)} className="mt-2">
+                    {getStatusText(task.status)}
+                  </Badge>
                 </div>
               ))}
             </div>

@@ -126,7 +126,7 @@ const TaskDetail = () => {
       case 'done':
         return 'success';
       case 'wip':
-        return 'secondary';
+        return 'info';
       case 'failed':
         return 'destructive';
       default:
