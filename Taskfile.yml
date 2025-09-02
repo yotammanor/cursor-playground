@@ -48,6 +48,21 @@ tasks:
     deps: [setup, api:dev, worker:dev, app:dev]
 
 
+  dev:timeout:
+    desc: "Start all services for local development with automatic timeout (5 seconds)"
+    aliases: [dev:t]
+    vars:
+      TIMEOUT: "{{.TIMEOUT | default 5}}"
+    deps:
+      - task: setup
+      - task: api:dev:timeout
+        vars: {TIMEOUT: "{{.TIMEOUT}}"}
+      - task: worker:dev:timeout
+        vars: {TIMEOUT: "{{.TIMEOUT}}"}
+      - task: app:dev:timeout
+        vars: {TIMEOUT: "{{.TIMEOUT}}"}
+
+
   test:
     desc: "Run all tests (unit + e2e)"
     aliases: [tests]
@@ -143,4 +158,28 @@ tasks:
         else
           echo "⚠️  zsh is not the current shell (current: $SHELL)"
           echo "   Consider switching to zsh for better development experience"
+        fi
+      - |
+        if command -v gtimeout >/dev/null 2>&1; then
+          GTIMEOUT_VERSION=$(gtimeout --version 2>/dev/null | head -n1 || echo "version check failed")
+          echo "✅ gtimeout is installed ($GTIMEOUT_VERSION)"
+        else
+          echo "❌ gtimeout is not installed or not in PATH"
+          echo "   Install coreutils: brew install coreutils"
+          echo "   This is required for the dev:timeout tasks to work properly"
+        fi
+      - |
+        if command -v brew >/dev/null 2>&1; then
+          if brew list coreutils >/dev/null 2>&1; then
+            COREOUTILS_VERSION=$(brew info coreutils 2>/dev/null | grep "coreutils:" | head -n1 || echo "version check failed")
+            echo "✅ coreutils package is installed via Homebrew ($COREOUTILS_VERSION)"
+          else
+            echo "⚠️  coreutils package is not installed via Homebrew"
+            echo "   Install: brew install coreutils"
+            echo "   This provides gtimeout for reliable process timeout handling"
+          fi
+        else
+          echo "⚠️  Homebrew is not installed or not in PATH"
+          echo "   Install Homebrew: https://brew.sh/"
+          echo "   Then install coreutils: brew install coreutils"
         fi

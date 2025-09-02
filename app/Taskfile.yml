@@ -41,6 +41,15 @@ tasks:
     env:
       CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
 
+  dev:timeout:
+    desc: 'Start frontend development server with configurable timeout (default: 5s)'
+    vars:
+      TIMEOUT: '{{.TIMEOUT | default 5}}'
+    cmds:
+      - gtimeout {{.TIMEOUT}} ../scripts/safe-start.sh "Frontend Dev Server" 5174 yarn dev
+    env:
+      CODEARTIFACT_AUTH_TOKEN: '{{.CODEARTIFACT_AUTH_TOKEN}}'
+
   build:
     desc: 'Build frontend for production'
     cmds:
