@@ -1,11 +1,6 @@
 """Simple test to verify pytest setup."""
 
 
-def test_simple():
-    """Simple test that should always pass."""
-    assert True
-
-
 def test_import_worker():
     """Test if we can import the worker module."""
     try:
