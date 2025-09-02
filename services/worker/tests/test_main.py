@@ -2,159 +2,436 @@
 
 import pytest
 import responses
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
+import argparse
+import requests
 
-from worker.main import poll_for_tasks, main, celery_app
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'worker'))
+
+from main import (
+    get_pending_tasks,
+    process_task,
+    update_task_status,
+    parse_arguments,
+    main,
+    WORKER_ID,
+    API_BASE_URL,
+    POLL_INTERVAL,
+    AUTO_SHUTDOWN_DELAY,
+)
 
 
-class TestPollForTasks:
-    """Test poll_for_tasks function."""
+class TestParseArguments:
+    """Test argument parsing functionality."""
+
+    def test_parse_arguments_default(self):
+        """Test parsing arguments with no flags."""
+        with patch("sys.argv", ["worker"]):
+            args = parse_arguments()
+            assert args.auto_shutdown is False
+
+    def test_parse_arguments_with_auto_shutdown(self):
+        """Test parsing arguments with auto-shutdown flag."""
+        with patch("sys.argv", ["worker", "--auto-shutdown"]):
+            args = parse_arguments()
+            assert args.auto_shutdown is True
+
+
+class TestUpdateTaskStatus:
+    """Test update_task_status function."""
 
     @responses.activate
-    def test_poll_for_tasks_success(self):
-        """Test successful polling for tasks."""
-        # Mock the API response
-        mock_tasks = [
-            {"id": 1, "title": "Task 1", "is_completed": False},
-            {"id": 2, "title": "Task 2", "is_completed": True},
-            {"id": 3, "title": "Task 3", "is_completed": False},
-        ]
+    def test_update_task_status_success(self):
+        """Test successful task status update."""
+        task_id = 1
+        status = "wip"
+        error_message = None
         
         responses.add(
-            responses.GET,
-            "http://localhost:8000/api/tasks",
-            json=mock_tasks,
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/{task_id}/status",
+            json={"status": status, "worker_id": WORKER_ID},
             status=200
         )
         
-        with patch('worker.main.process_task') as mock_process_task:
-            poll_for_tasks()
-            
-            # Should only process incomplete tasks
-            assert mock_process_task.delay.call_count == 2
-            mock_process_task.delay.assert_any_call(1)
-            mock_process_task.delay.assert_any_call(3)
+        result = update_task_status(task_id, status, error_message)
+        assert result is True
 
     @responses.activate
-    def test_poll_for_tasks_no_incomplete_tasks(self):
-        """Test polling when all tasks are completed."""
-        # Mock the API response with all completed tasks
-        mock_tasks = [
-            {"id": 1, "title": "Task 1", "is_completed": True},
-            {"id": 2, "title": "Task 2", "is_completed": True},
-        ]
+    def test_update_task_status_with_error_message(self):
+        """Test task status update with error message."""
+        task_id = 1
+        status = "failed"
+        error_message = "Task processing failed"
         
         responses.add(
-            responses.GET,
-            "http://localhost:8000/api/tasks",
-            json=mock_tasks,
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/{task_id}/status",
+            json={"status": status, "worker_id": WORKER_ID, "error_message": error_message},
             status=200
         )
         
-        with patch('worker.main.process_task') as mock_process_task:
-            poll_for_tasks()
-            
-            # Should not process any tasks
-            mock_process_task.delay.assert_not_called()
+        result = update_task_status(task_id, status, error_message)
+        assert result is True
 
     @responses.activate
-    def test_poll_for_tasks_api_error(self):
-        """Test handling API errors during polling."""
-        # Mock API error
+    def test_update_task_status_api_error(self):
+        """Test task status update when API returns error."""
+        task_id = 1
+        status = "wip"
+        
         responses.add(
-            responses.GET,
-            "http://localhost:8000/api/tasks",
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/{task_id}/status",
             status=500
         )
         
-        with patch('worker.main.logger.error') as mock_logger:
-            poll_for_tasks()
-            
-            # Should log the error
-            mock_logger.assert_called()
+        result = update_task_status(task_id, status)
+        assert result is False
 
     @responses.activate
-    def test_poll_for_tasks_connection_error(self):
-        """Test handling connection errors during polling."""
-        # Mock connection error
+    def test_update_task_status_connection_error(self):
+        """Test task status update when connection fails."""
+        task_id = 1
+        status = "wip"
+        
+        # Mock a connection error by making the request timeout
         responses.add(
-            responses.GET,
-            "http://localhost:8000/api/tasks",
-            body=Exception("Connection failed")
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/{task_id}/status",
+            body=requests.exceptions.ConnectionError("Connection failed")
         )
         
-        with patch('worker.main.logger.error') as mock_logger:
-            poll_for_tasks()
-            
-            # Should log the error
-            mock_logger.assert_called()
+        result = update_task_status(task_id, status)
+        assert result is False
+
+
+class TestGetPendingTasks:
+    """Test get_pending_tasks function."""
 
     @responses.activate
-    def test_poll_for_tasks_empty_response(self):
-        """Test polling with empty task list."""
+    def test_get_pending_tasks_success(self):
+        """Test successful getting of pending tasks."""
+        mock_tasks = [
+            {"id": 1, "title": "Task 1", "status": "pending"},
+            {"id": 2, "title": "Task 2", "status": "pending"},
+        ]
+        
         responses.add(
             responses.GET,
-            "http://localhost:8000/api/tasks",
+            f"{API_BASE_URL}/tasks/worker/pending",
+            json=mock_tasks,
+            status=200
+        )
+        
+        result = get_pending_tasks()
+        
+        assert len(result) == 2
+        assert result[0]["id"] == 1
+        assert result[1]["id"] == 2
+
+    @responses.activate
+    def test_get_pending_tasks_empty_response(self):
+        """Test getting pending tasks when none exist."""
+        responses.add(
+            responses.GET,
+            f"{API_BASE_URL}/tasks/worker/pending",
             json=[],
             status=200
         )
         
-        with patch('worker.main.process_task') as mock_process_task:
-            poll_for_tasks()
+        result = get_pending_tasks()
+        assert result == []
+
+    @responses.activate
+    def test_get_pending_tasks_api_error(self):
+        """Test handling API errors when getting pending tasks."""
+        responses.add(
+            responses.GET,
+            f"{API_BASE_URL}/tasks/worker/pending",
+            status=500
+        )
+        
+        result = get_pending_tasks()
+        assert result == []
+
+    @responses.activate
+    def test_get_pending_tasks_connection_error(self):
+        """Test handling connection errors when getting pending tasks."""
+        responses.add(
+            responses.GET,
+            f"{API_BASE_URL}/tasks/worker/pending",
+            body=requests.exceptions.ConnectionError("Connection failed")
+        )
+        
+        result = get_pending_tasks()
+        assert result == []
+
+
+class TestProcessTask:
+    """Test process_task function."""
+
+    @responses.activate
+    def test_process_task_success(self):
+        """Test successful task processing."""
+        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        
+        # Mock successful status updates
+        responses.add(
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/1/status",
+            json={"status": "wip"},
+            status=200
+        )
+        responses.add(
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/1/status",
+            json={"status": "done"},
+            status=200
+        )
+        
+        with patch("main.time.sleep") as mock_sleep:
+            result = process_task(task)
             
-            # Should not process any tasks
-            mock_process_task.delay.assert_not_called()
+            # Should sleep for 10 seconds (simulating work)
+            mock_sleep.assert_called_with(10)
+            assert result is True
+
+    @responses.activate
+    def test_process_task_wip_status_failure(self):
+        """Test task processing when WIP status update fails."""
+        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        
+        # Mock failed WIP status update
+        responses.add(
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/1/status",
+            status=500
+        )
+        
+        with patch("main.time.sleep"):
+            result = process_task(task)
+            assert result is False
+
+    @responses.activate
+    def test_process_task_done_status_failure(self):
+        """Test task processing when DONE status update fails."""
+        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        
+        # Mock successful WIP status update but failed DONE status update
+        responses.add(
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/1/status",
+            json={"status": "wip"},
+            status=200
+        )
+        responses.add(
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/1/status",
+            json={"status": "done"},
+            status=500
+        )
+        
+        with patch("main.time.sleep"):
+            result = process_task(task)
+            assert result is False
+
+    @responses.activate
+    def test_process_task_exception_handling(self):
+        """Test task processing when an exception occurs."""
+        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        
+        # Mock successful WIP status update
+        responses.add(
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/1/status",
+            json={"status": "wip"},
+            status=200
+        )
+        
+        # Mock failed status update for exception case
+        responses.add(
+            responses.PUT,
+            f"{API_BASE_URL}/tasks/1/status",
+            json={"status": "failed"},
+            status=200
+        )
+        
+        with patch("main.time.sleep", side_effect=Exception("Test error")):
+            result = process_task(task)
+            assert result is False
 
 
-class TestMain:
+class TestMainFunction:
     """Test main function."""
 
-    @patch('worker.main.poll_for_tasks')
-    @patch('worker.main.time.sleep')
-    @patch('worker.main.logger.info')
-    def test_main_success(self, mock_logger, mock_sleep, mock_poll):
-        """Test successful main execution."""
-        # Mock KeyboardInterrupt to stop the infinite loop
-        mock_sleep.side_effect = KeyboardInterrupt()
+    @patch("main.get_pending_tasks")
+    @patch("main.process_task")
+    @patch("main.time.sleep")
+    @patch("main.parse_arguments")
+    def test_main_function_basic_flow(self, mock_parse_args, mock_sleep, mock_process_task, mock_get_pending_tasks):
+        """Test basic main function flow with tasks."""
+        # Mock arguments
+        mock_args = MagicMock()
+        mock_args.auto_shutdown = False
+        mock_parse_args.return_value = mock_args
         
+        # Mock getting pending tasks
+        mock_get_pending_tasks.side_effect = [
+            [
+                {"id": 1, "title": "Task 1", "status": "pending"},
+                {"id": 2, "title": "Task 2", "status": "pending"},
+            ],
+            KeyboardInterrupt(),
+        ]
+        
+        # Mock successful task processing
+        mock_process_task.return_value = True
+        
+        # Mock sleep to avoid long waits
+        mock_sleep.return_value = None
+        
+        # Run main function; it will exit via KeyboardInterrupt side effect
         main()
         
-        # Verify polling was called
-        mock_poll.assert_called_once()
-        
-        # Verify logging
-        mock_logger.assert_any_call("Starting worker service...")
-        mock_logger.assert_any_call("Database schema managed by Alembic migrations")
-        mock_logger.assert_any_call("Worker service stopped")
+        # Verify that tasks were processed
+        assert mock_get_pending_tasks.called
+        assert mock_process_task.call_count == 2
+        # Verify sleep calls: 1 second between tasks + poll interval
+        assert mock_sleep.call_count >= 3
 
-    @patch('worker.main.poll_for_tasks')
-    @patch('worker.main.time.sleep')
-    @patch('worker.main.logger.info')
-    def test_main_database_error(self, mock_logger, mock_sleep, mock_poll):
-        """Test main function execution."""
-        # Mock KeyboardInterrupt to stop the infinite loop
-        mock_sleep.side_effect = KeyboardInterrupt()
+    @patch("main.get_pending_tasks")
+    @patch("main.time.sleep")
+    @patch("main.parse_arguments")
+    def test_main_function_no_pending_tasks(self, mock_parse_args, mock_sleep, mock_get_pending_tasks):
+        """Test main function when no pending tasks exist."""
+        # Mock arguments
+        mock_args = MagicMock()
+        mock_args.auto_shutdown = False
+        mock_parse_args.return_value = mock_args
         
+        # Mock no pending tasks
+        mock_get_pending_tasks.side_effect = [[], KeyboardInterrupt()]
+        
+        # Mock sleep to avoid long waits
+        mock_sleep.return_value = None
+        
+        # Run main function; exit via KeyboardInterrupt side effect
         main()
         
-        # Verify logging
-        mock_logger.assert_called_with("Starting worker service...")
+        # Verify that no tasks were processed
+        assert mock_get_pending_tasks.called
+        assert mock_sleep.called
 
-
-class TestCeleryApp:
-    """Test Celery app configuration."""
-
-    def test_celery_app_configuration(self):
-        """Test Celery app is properly configured."""
-        assert celery_app.name == "worker"
-        assert "redis://localhost:6379/0" in str(celery_app.conf.broker_url)
-        assert "redis://localhost:6379/0" in str(celery_app.conf.result_backend)
-
-    def test_celery_tasks_registered(self):
-        """Test that tasks are registered with Celery."""
-        from worker.tasks import process_task, send_notification
+    @patch("main.get_pending_tasks")
+    @patch("main.process_task")
+    @patch("main.time.sleep")
+    @patch("main.parse_arguments")
+    def test_main_function_auto_shutdown_enabled(self, mock_parse_args, mock_sleep, mock_process_task, mock_get_pending_tasks):
+        """Test main function with auto-shutdown enabled."""
+        # Mock arguments
+        mock_args = MagicMock()
+        mock_args.auto_shutdown = True
+        mock_parse_args.return_value = mock_args
         
-        # Verify tasks are registered
-        assert process_task in celery_app.tasks.values()
-        assert send_notification in celery_app.tasks.values()
+        # First call returns tasks, second call returns empty (triggering auto-shutdown)
+        mock_get_pending_tasks.side_effect = [
+            [{"id": 1, "title": "Task 1", "status": "pending"}],  # First call
+            [],  # Second call - no tasks
+            []   # Final check - still no tasks
+        ]
+        
+        # Mock successful task processing
+        mock_process_task.return_value = True
+        
+        # Mock sleep to avoid long waits
+        mock_sleep.return_value = None
+        
+        # Run main function; it should break on its own after auto-shutdown
+        main()
+        
+        # Verify auto-shutdown behavior
+        assert mock_get_pending_tasks.call_count >= 2
+        assert mock_process_task.called
+        # Should have slept for auto-shutdown delay
+        mock_sleep.assert_any_call(AUTO_SHUTDOWN_DELAY)
+
+    @patch("main.get_pending_tasks")
+    @patch("main.process_task")
+    @patch("main.time.sleep")
+    @patch("main.parse_arguments")
+    def test_main_function_auto_shutdown_with_new_tasks(self, mock_parse_args, mock_sleep, mock_process_task, mock_get_pending_tasks):
+        """Test auto-shutdown when new tasks appear during delay."""
+        # Mock arguments
+        mock_args = MagicMock()
+        mock_args.auto_shutdown = True
+        mock_parse_args.return_value = mock_args
+        
+        # First call returns tasks, second call returns empty, final check returns new tasks
+        mock_get_pending_tasks.side_effect = [
+            [{"id": 1, "title": "Task 1", "status": "pending"}],  # First call
+            [],  # Second call - no tasks
+            [{"id": 2, "title": "Task 2", "status": "pending"}],   # Final check - new tasks
+            KeyboardInterrupt(),
+        ]
+        
+        # Mock successful task processing
+        mock_process_task.return_value = True
+        
+        # Mock sleep to avoid long waits
+        mock_sleep.return_value = None
+        
+        # Run main function; exit via KeyboardInterrupt side effect after new tasks
+        main()
+        
+        # Verify auto-shutdown was cancelled due to new tasks
+        assert mock_get_pending_tasks.call_count >= 3
+        assert mock_process_task.call_count >= 1
+
+    @patch("main.get_pending_tasks")
+    @patch("main.time.sleep")
+    @patch("main.parse_arguments")
+    def test_main_function_keyboard_interrupt(self, mock_parse_args, mock_sleep, mock_get_pending_tasks):
+        """Test main function handling keyboard interrupt."""
+        # Mock arguments
+        mock_args = MagicMock()
+        mock_args.auto_shutdown = False
+        mock_parse_args.return_value = mock_args
+        
+        # Mock getting pending tasks to raise KeyboardInterrupt
+        mock_get_pending_tasks.side_effect = KeyboardInterrupt()
+        
+        # Mock sleep to avoid long waits
+        mock_sleep.return_value = None
+        
+        # Run main function
+        main()  # Should handle KeyboardInterrupt gracefully
+        
+        # Verify it was called
+        assert mock_get_pending_tasks.called
+
+    @patch("main.get_pending_tasks")
+    @patch("main.time.sleep")
+    @patch("main.parse_arguments")
+    def test_main_function_general_exception(self, mock_parse_args, mock_sleep, mock_get_pending_tasks):
+        """Test main function handling general exceptions."""
+        # Mock arguments
+        mock_args = MagicMock()
+        mock_args.auto_shutdown = False
+        mock_parse_args.return_value = mock_args
+        
+        # Mock getting pending tasks to raise an exception
+        mock_get_pending_tasks.side_effect = Exception("Test error")
+        
+        # Mock sleep to avoid long waits
+        mock_sleep.return_value = None
+        
+        # Run main function - should raise the exception
+        with pytest.raises(Exception, match="Test error"):
+            main()
+        
+        # Verify it was called
+        assert mock_get_pending_tasks.called
 

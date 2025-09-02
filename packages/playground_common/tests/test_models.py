@@ -1,8 +1,26 @@
-"""Tests for SQLAlchemy models."""
+"""Test models."""
 
 from datetime import datetime
 
-from common.models import Task, User
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from common.models import Base, Task, TaskStatus, User
+
+
+@pytest.fixture
+def test_db():
+    """Create a test database."""
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(bind=engine)
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    session = TestingSessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()
+        Base.metadata.drop_all(bind=engine)
 
 
 class TestUser:
@@ -59,7 +77,7 @@ class TestTask:
         test_db.refresh(user)
 
         # Then create a task for that user
-        task = Task(title="Test Task", description="This is a test task", user_id=user.id, is_completed=False)
+        task = Task(title="Test Task", description="This is a test task", user_id=user.id, status=TaskStatus.PENDING)
         test_db.add(task)
         test_db.commit()
         test_db.refresh(task)
@@ -68,7 +86,7 @@ class TestTask:
         assert task.title == "Test Task"
         assert task.description == "This is a test task"
         assert task.user_id == user.id
-        assert task.is_completed is False
+        assert task.status == TaskStatus.PENDING
         assert isinstance(task.created_at, datetime)
         assert isinstance(task.updated_at, datetime)
 
@@ -85,7 +103,7 @@ class TestTask:
         test_db.commit()
         test_db.refresh(task)
 
-        assert task.is_completed is False
+        assert task.status == TaskStatus.PENDING
         assert task.created_at is not None
         assert task.updated_at is not None
 
