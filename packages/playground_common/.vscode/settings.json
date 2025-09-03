@@ -6,6 +6,7 @@
         "**/.coverage": true,
         "dist": true,
         "*.egg-info": true,
+        "uv.lock": false,
     },
     "search.exclude": {
         "**/__pycache__": true,
@@ -14,5 +15,6 @@
         "**/.coverage": true,
         "dist": true,
         "*.egg-info": true,
+        "uv.lock": true,
     }
 }
