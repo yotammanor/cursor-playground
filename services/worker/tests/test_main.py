@@ -8,7 +8,7 @@ import requests
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'worker'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from main import (
     get_pending_tasks,
@@ -21,6 +21,8 @@ from main import (
     POLL_INTERVAL,
     AUTO_SHUTDOWN_DELAY,
 )
+from common.models import TaskStatus
+from common.schemas import Task
 
 
 class TestParseArguments:
@@ -46,7 +48,7 @@ class TestUpdateTaskStatus:
     def test_update_task_status_success(self):
         """Test successful task status update."""
         task_id = 1
-        status = "wip"
+        status = TaskStatus.WIP
         error_message = None
         
         responses.add(
@@ -63,7 +65,7 @@ class TestUpdateTaskStatus:
     def test_update_task_status_with_error_message(self):
         """Test task status update with error message."""
         task_id = 1
-        status = "failed"
+        status = TaskStatus.FAILED
         error_message = "Task processing failed"
         
         responses.add(
@@ -80,7 +82,7 @@ class TestUpdateTaskStatus:
     def test_update_task_status_api_error(self):
         """Test task status update when API returns error."""
         task_id = 1
-        status = "wip"
+        status = TaskStatus.WIP
         
         responses.add(
             responses.PUT,
@@ -95,7 +97,7 @@ class TestUpdateTaskStatus:
     def test_update_task_status_connection_error(self):
         """Test task status update when connection fails."""
         task_id = 1
-        status = "wip"
+        status = TaskStatus.WIP
         
         # Mock a connection error by making the request timeout
         responses.add(
@@ -114,23 +116,25 @@ class TestGetPendingTasks:
     @responses.activate
     def test_get_pending_tasks_success(self):
         """Test successful getting of pending tasks."""
-        mock_tasks = [
-            {"id": 1, "title": "Task 1", "status": "pending"},
-            {"id": 2, "title": "Task 2", "status": "pending"},
+        mock_tasks_data = [
+            {"id": 1, "title": "Task 1", "status": "pending", "description": None, "user_id": 1, "worker_id": None, "started_at": None, "completed_at": None, "error_message": None, "created_at": "2024-01-01T00:00:00", "updated_at": "2024-01-01T00:00:00"},
+            {"id": 2, "title": "Task 2", "status": "pending", "description": None, "user_id": 1, "worker_id": None, "started_at": None, "completed_at": None, "error_message": None, "created_at": "2024-01-01T00:00:00", "updated_at": "2024-01-01T00:00:00"},
         ]
         
         responses.add(
             responses.GET,
             f"{API_BASE_URL}/tasks/worker/pending",
-            json=mock_tasks,
+            json=mock_tasks_data,
             status=200
         )
         
         result = get_pending_tasks()
         
         assert len(result) == 2
-        assert result[0]["id"] == 1
-        assert result[1]["id"] == 2
+        assert result[0].id == 1
+        assert result[1].id == 2
+        assert isinstance(result[0], Task)
+        assert isinstance(result[1], Task)
 
     @responses.activate
     def test_get_pending_tasks_empty_response(self):
@@ -176,7 +180,19 @@ class TestProcessTask:
     @responses.activate
     def test_process_task_success(self):
         """Test successful task processing."""
-        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        task = Task(
+            id=1, 
+            title="Test Task", 
+            status=TaskStatus.PENDING,
+            description=None,
+            user_id=1,
+            worker_id=None,
+            started_at=None,
+            completed_at=None,
+            error_message=None,
+            created_at="2024-01-01T00:00:00",
+            updated_at="2024-01-01T00:00:00"
+        )
         
         # Mock successful status updates
         responses.add(
@@ -202,7 +218,19 @@ class TestProcessTask:
     @responses.activate
     def test_process_task_wip_status_failure(self):
         """Test task processing when WIP status update fails."""
-        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        task = Task(
+            id=1, 
+            title="Test Task", 
+            status=TaskStatus.PENDING,
+            description=None,
+            user_id=1,
+            worker_id=None,
+            started_at=None,
+            completed_at=None,
+            error_message=None,
+            created_at="2024-01-01T00:00:00",
+            updated_at="2024-01-01T00:00:00"
+        )
         
         # Mock failed WIP status update
         responses.add(
@@ -218,7 +246,19 @@ class TestProcessTask:
     @responses.activate
     def test_process_task_done_status_failure(self):
         """Test task processing when DONE status update fails."""
-        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        task = Task(
+            id=1, 
+            title="Test Task", 
+            status=TaskStatus.PENDING,
+            description=None,
+            user_id=1,
+            worker_id=None,
+            started_at=None,
+            completed_at=None,
+            error_message=None,
+            created_at="2024-01-01T00:00:00",
+            updated_at="2024-01-01T00:00:00"
+        )
         
         # Mock successful WIP status update but failed DONE status update
         responses.add(
@@ -241,7 +281,19 @@ class TestProcessTask:
     @responses.activate
     def test_process_task_exception_handling(self):
         """Test task processing when an exception occurs."""
-        task = {"id": 1, "title": "Test Task", "status": "pending"}
+        task = Task(
+            id=1, 
+            title="Test Task", 
+            status=TaskStatus.PENDING,
+            description=None,
+            user_id=1,
+            worker_id=None,
+            started_at=None,
+            completed_at=None,
+            error_message=None,
+            created_at="2024-01-01T00:00:00",
+            updated_at="2024-01-01T00:00:00"
+        )
         
         # Mock successful WIP status update
         responses.add(
@@ -281,8 +333,8 @@ class TestMainFunction:
         # Mock getting pending tasks
         mock_get_pending_tasks.side_effect = [
             [
-                {"id": 1, "title": "Task 1", "status": "pending"},
-                {"id": 2, "title": "Task 2", "status": "pending"},
+                Task(id=1, title="Task 1", status=TaskStatus.PENDING, description=None, user_id=1, worker_id=None, started_at=None, completed_at=None, error_message=None, created_at="2024-01-01T00:00:00", updated_at="2024-01-01T00:00:00"),
+                Task(id=2, title="Task 2", status=TaskStatus.PENDING, description=None, user_id=1, worker_id=None, started_at=None, completed_at=None, error_message=None, created_at="2024-01-01T00:00:00", updated_at="2024-01-01T00:00:00"),
             ],
             KeyboardInterrupt(),
         ]
@@ -338,7 +390,7 @@ class TestMainFunction:
         
         # First call returns tasks, second call returns empty (triggering auto-shutdown)
         mock_get_pending_tasks.side_effect = [
-            [{"id": 1, "title": "Task 1", "status": "pending"}],  # First call
+            [Task(id=1, title="Task 1", status=TaskStatus.PENDING, description=None, user_id=1, worker_id=None, started_at=None, completed_at=None, error_message=None, created_at="2024-01-01T00:00:00", updated_at="2024-01-01T00:00:00")],  # First call
             [],  # Second call - no tasks
             []   # Final check - still no tasks
         ]
@@ -371,9 +423,9 @@ class TestMainFunction:
         
         # First call returns tasks, second call returns empty, final check returns new tasks
         mock_get_pending_tasks.side_effect = [
-            [{"id": 1, "title": "Task 1", "status": "pending"}],  # First call
+            [Task(id=1, title="Task 1", status=TaskStatus.PENDING, description=None, user_id=1, worker_id=None, started_at=None, completed_at=None, error_message=None, created_at="2024-01-01T00:00:00", updated_at="2024-01-01T00:00:00")],  # First call
             [],  # Second call - no tasks
-            [{"id": 2, "title": "Task 2", "status": "pending"}],   # Final check - new tasks
+            [Task(id=2, title="Task 2", status=TaskStatus.PENDING, description=None, user_id=1, worker_id=None, started_at=None, completed_at=None, error_message=None, created_at="2024-01-01T00:00:00", updated_at="2024-01-01T00:00:00")],   # Final check - new tasks
             KeyboardInterrupt(),
         ]
         

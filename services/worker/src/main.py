@@ -5,6 +5,8 @@ import logging
 import time
 import uuid
 
+from common.models import TaskStatus
+from common.schemas import Task, TaskStatusUpdate
 import requests
 
 # Configure logging
@@ -32,13 +34,15 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def update_task_status(task_id: int, status: str, error_message: str = None) -> bool:
+def update_task_status(task_id: int, status: TaskStatus, error_message: str = None) -> bool:
     """Update task status via API."""
     try:
         url = f"{API_BASE_URL}/tasks/{task_id}/status"
-        data = {"status": status, "worker_id": WORKER_ID, "error_message": error_message}
 
-        response = requests.put(url, json=data)
+        # Use the shared Pydantic schema for status updates
+        status_update = TaskStatusUpdate(status=status, worker_id=WORKER_ID, error_message=error_message)
+
+        response = requests.put(url, json=status_update.model_dump())
         if response.status_code == 200:
             logger.info(f"Updated task {task_id} status to {status}")
             return True
@@ -49,16 +53,16 @@ def update_task_status(task_id: int, status: str, error_message: str = None) -> 
         return False
 
 
-def process_task(task: dict) -> bool:
+def process_task(task: Task) -> bool:
     """Process a single task."""
-    task_id = task["id"]
-    task_title = task["title"]
+    task_id = task.id
+    task_title = task.title
 
     logger.info(f"Starting to process task {task_id}: {task_title}")
 
     try:
         # Set status to WIP
-        if not update_task_status(task_id, "wip"):
+        if not update_task_status(task_id, TaskStatus.WIP):
             logger.error(f"Failed to set task {task_id} to WIP status")
             return False
 
@@ -67,7 +71,7 @@ def process_task(task: dict) -> bool:
         time.sleep(10)
 
         # Set status to DONE
-        if not update_task_status(task_id, "done"):
+        if not update_task_status(task_id, TaskStatus.DONE):
             logger.error(f"Failed to set task {task_id} to DONE status")
             return False
 
@@ -77,22 +81,27 @@ def process_task(task: dict) -> bool:
     except Exception as e:
         logger.error(f"Error processing task {task_id}: {e}")
         # Set status to FAILED
-        update_task_status(task_id, "failed", str(e))
+        update_task_status(task_id, TaskStatus.FAILED, str(e))
         return False
 
 
-def get_pending_tasks() -> list:
+def get_pending_tasks() -> list[Task]:
     """Get pending tasks from API."""
     try:
         response = requests.get(f"{API_BASE_URL}/tasks/worker/pending")
         if response.status_code == 200:
-            tasks = response.json()
+            tasks_data = response.json()
+            # Parse the response into Task objects
+            tasks = [Task.model_validate(task_data) for task_data in tasks_data]
             logger.info(f"Found {len(tasks)} pending tasks")
             return tasks
         logger.error(f"Failed to get pending tasks: {response.status_code}")
         return []
     except requests.RequestException as e:
         logger.error(f"Error getting pending tasks: {e}")
+        return []
+    except Exception as e:
+        logger.error(f"Error parsing task data: {e}")
         return []
 
 
@@ -130,14 +139,14 @@ def main():
 
                 # Process tasks one by one (linearly)
                 for task in pending_tasks:
-                    logger.info(f"Processing task {task['id']}: {task['title']}")
+                    logger.info(f"Processing task {task.id}: {task.title}")
                     success = process_task(task)
 
                     if success:
-                        logger.info(f"Task {task['id']} completed successfully")
+                        logger.info(f"Task {task.id} completed successfully")
                         has_completed_task = True
                     else:
-                        logger.error(f"Task {task['id']} failed")
+                        logger.error(f"Task {task.id} failed")
 
                     # Small delay between tasks to avoid overwhelming the system
                     time.sleep(1)
