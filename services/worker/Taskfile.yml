@@ -5,7 +5,7 @@ version: "3"
 
 vars:
   SERVICE_NAME: worker
-  PYTHON_SRC: worker
+  PYTHON_SRC: src
 
 tasks:
   default:
