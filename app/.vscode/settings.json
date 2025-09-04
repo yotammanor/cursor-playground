@@ -1,19 +1,18 @@
 {
-    "files.exclude": {
-        "node_modules": true,
-        "dist": true,
-        ".history": false,
-        ".yarn": false,
-        "yarn.lock": false,
-    },
-    "search.exclude": {
-        "node_modules": true,
-        "dist": true,
-        ".history": true,
-        ".yarn": true,
-        "yarn.lock": true,
-    },
-    "npm.packageManager": "yarn",
-    "javascript.updateImportsOnFileMove.enabled": "always",
-
+  "files.exclude": {
+    "node_modules": true,
+    "dist": true,
+    ".history": false,
+    ".yarn": false,
+    "yarn.lock": false
+  },
+  "search.exclude": {
+    "node_modules": true,
+    "dist": true,
+    ".history": true,
+    ".yarn": true,
+    "yarn.lock": true
+  },
+  "npm.packageManager": "yarn",
+  "javascript.updateImportsOnFileMove.enabled": "always"
 }
