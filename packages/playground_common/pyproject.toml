@@ -30,10 +30,7 @@ url = "https://pagaya-artifacts-704102000649.d.codeartifact.us-east-1.amazonaws.
 keyring-provider = "subprocess"
 
 [tool.ruff]
-# Extend the root configuration
-extend = "../../.ruff.toml"
-
-
+extend = ".ruff.toml"
 
 [build-system]
 requires = ["hatchling"]
