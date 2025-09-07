@@ -18,7 +18,6 @@ from main import (
     main,
     WORKER_ID,
     API_BASE_URL,
-    POLL_INTERVAL,
     AUTO_SHUTDOWN_DELAY,
 )
 from common.models import TaskStatus
