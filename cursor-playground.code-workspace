@@ -1,20 +1,40 @@
 {
-    "folders": [
+  "folders": [
+    {
+      "path": ".",
+      "name": "root",
+    },
+    {
+      "path": "app",
+      "name": "app"
+    },
+    {
+      "path": "services/api",
+      "name": "api"
+    },
+    {
+      "path": "services/worker",
+      "name": "worker"
+    },
+    {
+      "path": "packages/playground_common",
+      "name": "playground_common"
+    }
+  ],
+  "settings": {
+    "workbench.editor.labelFormat": "medium",
+    "files.autoSave": "afterDelay"
+  },
+  "launch": {
+    "configurations": [
         {
-            "path": ".",
-            "name": "root",
-        },
-        { "path": "app",
-            "name": "app",
-        },
-        { "path": "services/api",
-            "name": "api",
-        },
-        { "path": "services/worker",
-            "name": "worker",
-        },
-        { "path": "packages/playground_common",
-            "name": "playground_common",
+            "name": "Foo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder:api}/src/main.py",
+            "cwd": "${workspaceFolder:api}",
+            "justMyCode": false
         }
     ],
+  }
 }

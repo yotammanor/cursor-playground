@@ -14,5 +14,11 @@
         "**/.coverage": true,
         "dist": true,
         "*.egg-info": true,
-    }
+    },
+    "python.defaultInterpreterPath": "${rootPath}/.venv/bin/python",
+    "python.analysis.extraPaths": [
+        "../../packages/playground_common",
+        "../../packages/playground_common/src",
+        "./src"
+      ],
 }
