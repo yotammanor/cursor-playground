@@ -5,3 +5,5 @@ alwaysApply: false
 - always work on a single todo at most.
 - You are encouraged to break down a single todo item to multiple substeps.
 - Never delete todo.md files without permissions
+- todo files should not be committed or tracked, unless already tracked or requested by user.
+- name should reflect task context. BAD - todo.md. GOOD - todo-add-user-login-flow.md

@@ -20,7 +20,7 @@
 - Implement feature following the plan
 - Special attention to existing pattern and conventions.
 - Prefer code reuse whenever possible.
-- Use tools like playwright and local server (`task dev`) to verify changes behave as expected.
+- Use tools like playwright and local server (see `terminal.mdc` for server startup instructions) to verify changes behave as expected.
 
 
 ## 5. Test
@@ -48,4 +48,3 @@
 
 - Prefer code reuse whenever possible
 - Don't adapt existing functionality without user approval.
--

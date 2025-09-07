@@ -1,8 +1,6 @@
 ---
-description:
-alwaysApply: true
+description: Rules for interacting with git or making version control changes.
 ---
-
 - On every completed task, make sure to commit changes.
 - make sure to run `task lint` before you commit.
 - pick only the selected changes to be stage.

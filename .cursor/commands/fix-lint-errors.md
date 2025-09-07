@@ -25,4 +25,4 @@ Execute the full lint suite and systematically fix any failures, ensuring coding
 **Guidelines**
 - You should never change linter rules without permission.
 - If fixes are non-trivial, higlight and consult.
-- apply rules re taskfiles.mdc and terminal.ndc
+- apply rules re taskfiles.mdc and terminal.mdc

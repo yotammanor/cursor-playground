@@ -27,7 +27,7 @@ This command provides a systematic approach to debugging UI issues using Playwri
 
 #### For API/Data Issues
 ```bash
-# Test API endpoints directly
+# Test API endpoints directly (ensure services are running via terminal.mdc timeout tasks)
 curl -s http://localhost:8000/api/[resource]/ | jq .
 curl -s http://localhost:8000/api/[resource]/[id] | jq .
 ```
