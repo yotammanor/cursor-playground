@@ -19,3 +19,5 @@ Commit to source control the requested unsaved changes
 
 **Guidelines**
 - NEVER delete uncommitted changes or untracked files.
+- UNTRACKED FILES - ask before adding.
+
