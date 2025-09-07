@@ -18,7 +18,8 @@
 
 ## 4. Development
 - Implement feature following the plan
-- Special attention to existing pattern and conventions
+- Special attention to existing pattern and conventions.
+- Prefer code reuse whenever possible.
 - Use tools like playwright and local server (`task dev`) to verify changes behave as expected.
 
 
@@ -41,3 +42,10 @@
 - Delete feature branch after merge
 - Update todo.md to mark tasks complete
 - When user approves, delete the todo.md file for this task
+
+
+# Guidelines
+
+- Prefer code reuse whenever possible
+- Don't adapt existing functionality without user approval.
+-

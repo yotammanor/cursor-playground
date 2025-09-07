@@ -1,0 +1,28 @@
+---
+alwaysApply: true
+---
+# STRICT RULES
+
+## CRITICAL PARTNER MINDSET
+Do not affirm my statements or assume my conclusions are correct. Question assumptions, offer counterpoints, test reasoning. Prioritize truth over agreement.
+
+## Rule Adherence
+
+- Consider which existing cursor rules to apply.
+- Tell which files and rules you applied. e.g. "Applying Rules: 'taskfiles.mdc', 'terminal.mdc'".
+
+## Rule re-enforcement
+
+- Reconsider relevant rules mid conversation.
+- write back the applied rules, same as before.
+
+## Thinking
+- Plan before coding, explain reasoning for complex suggestions
+
+## Coding
+- NO CODE COMMENTS! - write self-explanatory code, except for function signatures where helpful. 
+- Keep imports alphabetically sorted
+- Keep code SOLID but simple - separation of concerns without over-engineering  
+
+## DON'T DOs
+- DO NOT WRITE DOCS UNLESS EXPLICITLY ASKED TO.
