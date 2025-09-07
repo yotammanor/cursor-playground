@@ -14,10 +14,10 @@ Commit to source control the requested unsaved changes
   2. Run `task format`.
   3. stage only the relevant changes.
   4. commit with a oneline, clear and consice commit message.
-3. **Print the commit messages** created
+3. **Print the commit messages** created by this change
  
 
 **Guidelines**
 - NEVER delete uncommitted changes or untracked files.
 - UNTRACKED FILES - ask before adding.
-
+- defer to @versionControl.mdc re version control
