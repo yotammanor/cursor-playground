@@ -1,0 +1,27 @@
+{
+  "files.exclude": {
+    "test-results": true,
+    "playwright-report": true,
+    "coverage": true,
+    "dist": true,
+    "build": true,
+    "dist-ssr": true,
+    ".idea": true,
+    "services/*": true,
+    "app/*": true,
+    "packages/*": true,
+  },
+  "search.exclude": {
+    "test-results": true,
+    "playwright-report": true,
+    "coverage": true,
+    "dist": true,
+    "build": true,
+    "dist-ssr": true,
+    ".history": true,
+    "services/*": true,
+    "app/*": true,
+    "packages/*": true,
+  },
+  "python.analysis.autoImportCompletions": true,
+}
